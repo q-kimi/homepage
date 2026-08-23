@@ -159,6 +159,24 @@
     <input type="text" id="pseudo-input" placeholder="Ex. Anthony" maxlength="30">
     <p class="settings-error" id="avatar-error" hidden></p>
 
+    <div class="settings-row">
+      <label for="shortcuts-toggle" class="settings-row-label">Afficher les raccourcis</label>
+      <label class="switch">
+        <input type="checkbox" id="shortcuts-toggle" checked>
+        <span class="switch-track"></span>
+      </label>
+    </div>
+
+    <div class="settings-row">
+      <p class="settings-row-label">Page d'accueil / nouvel onglet</p>
+      <button type="button" class="btn-link" id="homepage-setup-btn">Comment faire ?</button>
+    </div>
+    <div class="homepage-instructions" id="homepage-instructions" hidden>
+      <p id="homepage-instructions-text"></p>
+      <button type="button" class="btn-link" id="homepage-copy-url">Copier l'URL de cette page</button>
+      <span class="settings-hint" id="homepage-copy-confirm" hidden>Copié !</span>
+    </div>
+
     <div class="settings-actions">
       <button type="button" class="btn-ghost" id="settings-cancel">Annuler</button>
       <button type="button" class="btn-primary" id="settings-save">Enregistrer</button>

@@ -14,7 +14,21 @@ export function renderGreeting() {
   const pseudo = localStorage.getItem(PSEUDO_KEY);
   const word = getGreetingWord();
 
-  greetingText.textContent = pseudo ? `${word}, ${pseudo}` : word;
+  greetingText.textContent = "";
+  greetingText.append(`${word}, `);
+
+  if (pseudo) {
+    greetingText.append(pseudo);
+  } else {
+    const placeholder = document.createElement("button");
+    placeholder.type = "button";
+    placeholder.className = "greeting-placeholder";
+    placeholder.textContent = "Utilisateur";
+    placeholder.addEventListener("click", () => {
+      document.dispatchEvent(new CustomEvent("open-settings"));
+    });
+    greetingText.append(placeholder);
+  }
 
   if (word === "Bonjour") {
     greetingEmoji.textContent = "👋";
