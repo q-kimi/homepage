@@ -1,4 +1,4 @@
-import { form, input } from "./engines.js";
+import { input } from "./engines.js";
 import { syncFakePlaceholder } from "./placeholder.js";
 
 const micButton = document.getElementById("mic-button");
@@ -26,11 +26,6 @@ if (SpeechRecognitionClass) {
     }
     input.value = transcript;
     syncFakePlaceholder();
-
-    const lastResult = e.results[e.results.length - 1];
-    if (lastResult.isFinal && transcript.trim()) {
-      form.requestSubmit();
-    }
   });
 
   recognition.addEventListener("end", () => {

@@ -23,7 +23,7 @@ export function renderGreeting() {
     const placeholder = document.createElement("button");
     placeholder.type = "button";
     placeholder.className = "greeting-placeholder";
-    placeholder.textContent = "Utilisateur";
+    placeholder.textContent = "{User}";
     placeholder.addEventListener("click", () => {
       document.dispatchEvent(new CustomEvent("open-settings"));
     });

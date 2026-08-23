@@ -27,7 +27,8 @@ shortcutsToggle.addEventListener("change", () => {
 
 const homepageSetupBtn = document.getElementById("homepage-setup-btn");
 const homepageInstructions = document.getElementById("homepage-instructions");
-const homepageInstructionsText = document.getElementById("homepage-instructions-text");
+const homepageInstructionsBrowser = document.getElementById("homepage-instructions-browser");
+const homepageInstructionsList = document.getElementById("homepage-instructions-list");
 const homepageCopyUrl = document.getElementById("homepage-copy-url");
 const homepageCopyConfirm = document.getElementById("homepage-copy-confirm");
 
@@ -38,21 +39,76 @@ function getBrowserInstructions() {
   const isChrome = !isEdge && (ua.includes("Chrome/") || ua.includes("Chromium/"));
 
   if (isFirefox) {
-    return "Firefox :\nMenu (☰) > Paramètres > Accueil.\n- Page(s) d'accueil : choisis \"Adresses personnalisées\" et colle l'URL.\n- Nouveaux onglets : installe une extension comme \"New Tab Override\", puis choisis cette URL.";
+    return {
+      name: "Firefox",
+      path: "Menu (☰) > Paramètres > Accueil.",
+      steps: [
+        { label: "Page(s) d'accueil", text: "choisis « Adresses personnalisées » et colle l'URL." },
+        { label: "Nouveaux onglets", text: "installe une extension comme « New Tab Override », puis choisis cette URL." },
+      ],
+    };
   }
   if (isEdge) {
-    return "Edge :\nParamètres > Démarrage, accueil et nouveaux onglets.\n- \"Ouvrir ces pages\" : ajoute l'URL pour le démarrage.\n- Bouton Accueil : active-le et colle l'URL.\n- Nouvel onglet : non personnalisable nativement, une extension est nécessaire.";
+    return {
+      name: "Edge",
+      path: "Paramètres > Démarrage, accueil et nouveaux onglets.",
+      steps: [
+        { label: "Au démarrage", text: "« Ouvrir ces pages » : ajoute l'URL." },
+        { label: "Bouton Accueil", text: "active-le puis colle l'URL." },
+        { label: "Nouvel onglet", text: "non personnalisable nativement ; une extension est nécessaire." },
+      ],
+    };
   }
   if (isChrome) {
-    return "Chrome :\nParamètres > Au démarrage > \"Ouvrir une page spécifique\" et colle l'URL.\n- Page d'accueil : Paramètres > Apparence > active \"Afficher le bouton Accueil\" et colle l'URL.\n- Nouvel onglet : non personnalisable nativement, une extension comme \"New Tab Redirect\" est nécessaire.";
+    return {
+      name: "Chromium",
+      path: "Paramètres > Au démarrage.",
+      steps: [
+        { label: "", text: "Choisis « Ouvrir une page spécifique » et colle l'URL." },
+        { label: "Page d'accueil", text: "Paramètres > Apparence > active « Afficher le bouton Accueil » et colle l'URL." },
+        { label: "Nouvel onglet", text: "non personnalisable nativement ; une extension comme « New Tab Redirect » est nécessaire." },
+      ],
+    };
   }
-  return "Ouvre les paramètres de ton navigateur et cherche \"page de démarrage\" ou \"page d'accueil\", puis colle l'URL ci-dessous. La personnalisation du nouvel onglet nécessite en général une extension.";
+  return {
+    name: "Ton navigateur",
+    path: "",
+    steps: [
+      { label: "", text: "Cherche « page de démarrage » ou « page d'accueil » dans les paramètres et colle l'URL ci-dessous." },
+      { label: "", text: "La personnalisation du nouvel onglet nécessite en général une extension." },
+    ],
+  };
+}
+
+function renderHomepageInstructions() {
+  const { name, path, steps } = getBrowserInstructions();
+
+  homepageInstructionsBrowser.textContent = `${name} :`;
+  homepageInstructionsList.textContent = "";
+
+  if (path) {
+    const pathItem = document.createElement("li");
+    pathItem.textContent = path;
+    homepageInstructionsList.append(pathItem);
+  }
+
+  for (const step of steps) {
+    const item = document.createElement("li");
+    if (step.label) {
+      const label = document.createElement("strong");
+      label.textContent = `${step.label} : `;
+      item.append(label, step.text);
+    } else {
+      item.textContent = step.text;
+    }
+    homepageInstructionsList.append(item);
+  }
 }
 
 homepageSetupBtn.addEventListener("click", () => {
   const isHidden = homepageInstructions.hidden;
   if (isHidden) {
-    homepageInstructionsText.textContent = getBrowserInstructions();
+    renderHomepageInstructions();
   }
   homepageInstructions.hidden = !isHidden;
 });

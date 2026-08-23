@@ -85,17 +85,12 @@ body {
   font: inherit;
   font-weight: inherit;
   letter-spacing: inherit;
-  color: inherit;
+  color: var(--text-dim);
   cursor: pointer;
-  text-decoration: underline;
-  text-decoration-style: dashed;
-  text-decoration-color: var(--text-dim);
-  text-underline-offset: 4px;
 }
 
 .greeting-placeholder:hover {
   color: var(--accent);
-  text-decoration-color: var(--accent);
 }
 
 .greeting-emoji.wave {
@@ -356,6 +351,10 @@ body {
   margin-top: 24px;
 }
 
+.shortcuts[hidden] {
+  display: none;
+}
+
 .shortcut-tile {
   display: flex;
   flex-direction: column;
@@ -591,7 +590,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 4px;
+  margin: 16px 0 4px;
 }
 
 .settings-row-label {
@@ -603,8 +602,8 @@ body {
 .switch {
   position: relative;
   display: inline-block;
-  width: 38px;
-  height: 22px;
+  width: 42px;
+  height: 24px;
   flex: 0 0 auto;
   cursor: pointer;
 }
@@ -619,10 +618,10 @@ body {
 .switch-track {
   position: absolute;
   inset: 0;
-  background: var(--pill);
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 999px;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .switch-track::before {
@@ -630,10 +629,11 @@ body {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 16px;
-  height: 16px;
-  background: var(--text-dim);
+  width: 18px;
+  height: 18px;
+  background: var(--text);
   border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
   transition: transform 0.15s ease, background 0.15s ease;
 }
 
@@ -644,11 +644,16 @@ body {
 
 .switch input:checked + .switch-track::before {
   background: #1a1a1a;
-  transform: translateX(16px);
+  transform: translateX(18px);
+}
+
+.switch:hover .switch-track {
+  border-color: var(--text-dim);
 }
 
 .switch input:focus-visible + .switch-track {
-  border-color: var(--text-dim);
+  outline: 2px solid var(--text-dim);
+  outline-offset: 2px;
 }
 
 /* Settings modal: homepage setup instructions */
@@ -657,16 +662,64 @@ body {
   background: var(--pill);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 12px;
+  padding: 14px;
   margin: -2px 0 16px;
 }
 
-.homepage-instructions p {
+.homepage-instructions-browser {
   margin: 0 0 8px;
   font-size: 12.5px;
-  line-height: 1.5;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.homepage-instructions-list {
+  margin: 0 0 12px;
+  padding: 0 0 0 16px;
+  list-style: disc;
+}
+
+.homepage-instructions-list li {
+  font-size: 12.5px;
+  line-height: 1.55;
   color: var(--text-dim);
-  white-space: pre-line;
+}
+
+.homepage-instructions-list li + li {
+  margin-top: 6px;
+}
+
+.homepage-instructions-list li strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.homepage-instructions-actions {
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 12.5px;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+
+.btn-copy:hover {
+  border-color: var(--text-dim);
+}
+
+.btn-copy svg {
+  flex: 0 0 auto;
 }
 
 .settings-hint {
