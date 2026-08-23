@@ -8,7 +8,7 @@ const avatarInput = document.getElementById("avatar-input");
 const avatarRemove = document.getElementById("avatar-remove");
 const avatarError = document.getElementById("avatar-error");
 
-function showAvatarError(message) {
+export function showAvatarError(message) {
   avatarError.textContent = message;
   avatarError.hidden = !message;
 }

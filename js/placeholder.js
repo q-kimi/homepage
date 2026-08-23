@@ -1,3 +1,5 @@
+import { input } from "./engines.js";
+
 const fakePlaceholder = document.getElementById("fake-placeholder");
 const typedWordEl = document.getElementById("typed-word");
 
@@ -60,7 +62,7 @@ function stopTyping() {
   typingTimer = null;
 }
 
-function syncFakePlaceholder() {
+export function syncFakePlaceholder() {
   const hasValue = input.value.length > 0;
   fakePlaceholder.classList.toggle("hidden", hasValue);
   if (hasValue) {

@@ -31,8 +31,8 @@ const ENGINES = {
 
 const ENGINE_STORAGE_KEY = "homepage.engine";
 
-const form = document.getElementById("search-form");
-const input = document.getElementById("search-input");
+export const form = document.getElementById("search-form");
+export const input = document.getElementById("search-input");
 const engineToggle = document.getElementById("engine-toggle");
 const engineMenu = document.getElementById("engine-menu");
 const engineIcon = document.getElementById("engine-icon");

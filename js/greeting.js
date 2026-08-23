@@ -1,4 +1,4 @@
-const PSEUDO_KEY = "homepage.pseudo";
+export const PSEUDO_KEY = "homepage.pseudo";
 
 const greetingText = document.getElementById("greeting-text");
 const greetingEmoji = document.getElementById("greeting-emoji");
@@ -10,7 +10,7 @@ function getGreetingWord() {
   return isDaytime ? "Bonjour" : "Bonsoir";
 }
 
-function renderGreeting() {
+export function renderGreeting() {
   const pseudo = localStorage.getItem(PSEUDO_KEY);
   const word = getGreetingWord();
 

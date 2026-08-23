@@ -1,3 +1,6 @@
+import { form, input } from "./engines.js";
+import { syncFakePlaceholder } from "./placeholder.js";
+
 const micButton = document.getElementById("mic-button");
 const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
 

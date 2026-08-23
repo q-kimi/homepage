@@ -1,6 +1,6 @@
 # Homepage
 
-Une page d'accueil personnelle (nouvel onglet) minimaliste, inspirée de Google : barre de recherche multi-moteurs, salutation personnalisée, raccourcis, dictée vocale et avatar — le tout en HTML/CSS/JS pur, sans dépendances ni build.
+Une page d'accueil personnelle (nouvel onglet) minimaliste, inspirée de Google : barre de recherche multi-moteurs, salutation personnalisée, raccourcis, dictée vocale et avatar — le tout en HTML/CSS/JS, servi via [Vite](https://vitejs.dev).
 
 ## Fonctionnalités
 
@@ -14,22 +14,25 @@ Une page d'accueil personnelle (nouvel onglet) minimaliste, inspirée de Google 
 
 ## Utilisation
 
-Ouvre simplement [index.html](index.html) dans un navigateur, ou définis-le comme page de nouvel onglet (via une extension comme *New Tab URL* / *Custom New Tab*) :
-
+```bash
+npm install
+npm run dev       # serveur de dev Vite avec rechargement à chaud
+npm run build     # build de production dans dist/
+npm run preview   # sert le build de production localement
 ```
-file:///chemin/vers/homepage/index.html
-```
 
-Aucune installation ni build n'est nécessaire.
+Le serveur de dev tourne sur `http://localhost:5173` par défaut.
 
 ## Structure du projet
 
 ```
 homepage/
 ├── index.html          # Structure de la page
+├── vite.config.js       # Configuration Vite
 ├── css/
 │   └── style.css        # Styles
 └── js/
+    ├── main.js           # Point d'entrée, importe les modules dans l'ordre
     ├── engines.js        # Sélecteur de moteur de recherche + soumission du formulaire
     ├── placeholder.js     # Effet machine à écrire du placeholder
     ├── greeting.js        # Message de salutation

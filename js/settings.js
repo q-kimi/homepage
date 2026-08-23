@@ -1,3 +1,6 @@
+import { PSEUDO_KEY, renderGreeting } from "./greeting.js";
+import { showAvatarError } from "./avatar.js";
+
 const settingsToggle = document.getElementById("settings-toggle");
 const settingsOverlay = document.getElementById("settings-overlay");
 const settingsCancel = document.getElementById("settings-cancel");
