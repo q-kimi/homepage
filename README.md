@@ -29,6 +29,9 @@ Le serveur de dev tourne sur `http://localhost:5173` par défaut.
 homepage/
 ├── index.html          # Structure de la page
 ├── vite.config.js       # Configuration Vite
+├── Dockerfile            # Build multi-stage (Node -> Nginx)
+├── nginx.conf            # Config Nginx (gzip, cache assets)
+├── .dockerignore
 ├── css/
 │   └── style.css        # Styles
 └── js/
@@ -40,6 +43,17 @@ homepage/
     ├── settings.js         # Modale de paramètres (pseudo + avatar)
     └── voice.js            # Dictée vocale (Web Speech API)
 ```
+
+## Déploiement (Docker / Dokploy)
+
+Le `Dockerfile` fait un build multi-stage : compilation avec Node puis service statique via Nginx (image finale légère, sans Node ni `node_modules`).
+
+```bash
+docker build -t homepage .
+docker run -p 8080:80 homepage
+```
+
+Sur **Dokploy** : créer une application de type *Dockerfile* pointant sur ce repo, port interne **80** — aucune autre configuration nécessaire.
 
 ## Licence
 
