@@ -78,11 +78,16 @@ body {
   line-height: 1;
 }
 
+.greeting-pseudo {
+  font-style: italic;
+}
+
 .greeting-placeholder {
   background: none;
   border: none;
   padding: 0;
   font: inherit;
+  font-style: italic;
   font-weight: inherit;
   letter-spacing: inherit;
   color: var(--text-dim);
@@ -225,13 +230,49 @@ body {
   height: 18px;
 }
 
-.engine-icon svg,
-.engine-icon img {
+.engine-icon svg {
   display: block;
   width: 18px;
   height: 18px;
   border-radius: 4px;
 }
+
+/* Brand icon badges (avoid external favicon requests) */
+
+.brand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  flex: 0 0 auto;
+}
+
+.brand-icon--lg {
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+}
+
+.icon-google { background: #4285f4; }
+.icon-bing { background: #00897b; }
+.icon-duckduckgo { background: #de5833; }
+.icon-yahoo { background: #6001d2; }
+.icon-brave { background: #fb542b; }
+.icon-ecosia { background: #43a047; }
+.icon-qwant { background: #1d2c4d; }
+
+.icon-youtube { background: #ff0000; }
+.icon-gmail { background: #ea4335; }
+.icon-github { background: #24292e; }
+.icon-netflix { background: #e50914; }
+.icon-x { background: #000000; }
 
 .chevron {
   color: var(--text-dim);
@@ -373,13 +414,7 @@ body {
   color: var(--text);
 }
 
-.shortcut-tile img {
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
-}
-
-.shortcut-tile span {
+.shortcut-tile .shortcut-label {
   font-size: 12px;
   text-align: center;
   white-space: nowrap;
@@ -726,4 +761,14 @@ body {
   font-size: 12px;
   color: var(--accent);
   margin-left: 8px;
+}
+
+/* Respect reduced-motion preference */
+
+@media (prefers-reduced-motion: reduce) {
+  .greeting-emoji.wave,
+  .typed-cursor,
+  .mic-button.listening {
+    animation: none;
+  }
 }

@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Accueil</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="theme-color" content="#131314">
 <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -39,45 +41,31 @@
 
           <ul class="engine-menu" id="engine-menu" role="listbox">
             <li role="option" data-engine="google">
-              <span class="engine-icon">
-                <img src="https://www.google.com/s2/favicons?sz=64&domain=google.com" width="18" height="18" alt="">
-              </span>
+              <span class="engine-icon"><span class="brand-icon icon-google">G</span></span>
               <span>Google</span>
             </li>
             <li role="option" data-engine="bing">
-              <span class="engine-icon">
-                <img src="https://www.google.com/s2/favicons?sz=64&domain=bing.com" width="18" height="18" alt="">
-              </span>
+              <span class="engine-icon"><span class="brand-icon icon-bing">B</span></span>
               <span>Bing</span>
             </li>
             <li role="option" data-engine="duckduckgo">
-              <span class="engine-icon">
-                <img src="https://www.google.com/s2/favicons?sz=64&domain=duckduckgo.com" width="18" height="18" alt="">
-              </span>
+              <span class="engine-icon"><span class="brand-icon icon-duckduckgo">D</span></span>
               <span>DuckDuckGo</span>
             </li>
             <li role="option" data-engine="yahoo">
-              <span class="engine-icon">
-                <img src="https://www.google.com/s2/favicons?sz=64&domain=yahoo.com" width="18" height="18" alt="">
-              </span>
+              <span class="engine-icon"><span class="brand-icon icon-yahoo">Y</span></span>
               <span>Yahoo</span>
             </li>
             <li role="option" data-engine="brave">
-              <span class="engine-icon">
-                <img src="https://www.google.com/s2/favicons?sz=64&domain=brave.com" width="18" height="18" alt="">
-              </span>
+              <span class="engine-icon"><span class="brand-icon icon-brave">B</span></span>
               <span>Brave</span>
             </li>
             <li role="option" data-engine="ecosia">
-              <span class="engine-icon">
-                <img src="https://www.google.com/s2/favicons?sz=64&domain=ecosia.org" width="18" height="18" alt="">
-              </span>
+              <span class="engine-icon"><span class="brand-icon icon-ecosia">E</span></span>
               <span>Ecosia</span>
             </li>
             <li role="option" data-engine="qwant">
-              <span class="engine-icon">
-                <img src="https://www.google.com/s2/favicons?sz=64&domain=qwant.com" width="18" height="18" alt="">
-              </span>
+              <span class="engine-icon"><span class="brand-icon icon-qwant">Q</span></span>
               <span>Qwant</span>
             </li>
           </ul>
@@ -103,24 +91,24 @@
 
     <div class="shortcuts">
       <a class="shortcut-tile" href="https://www.youtube.com" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?sz=64&domain=youtube.com" width="20" height="20" alt="">
-        <span>YouTube</span>
+        <span class="brand-icon brand-icon--lg icon-youtube">Y</span>
+        <span class="shortcut-label">YouTube</span>
       </a>
       <a class="shortcut-tile" href="https://mail.google.com" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?sz=64&domain=gmail.com" width="20" height="20" alt="">
-        <span>Gmail</span>
+        <span class="brand-icon brand-icon--lg icon-gmail">M</span>
+        <span class="shortcut-label">Gmail</span>
       </a>
       <a class="shortcut-tile" href="https://github.com" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?sz=64&domain=github.com" width="20" height="20" alt="">
-        <span>GitHub</span>
+        <span class="brand-icon brand-icon--lg icon-github">G</span>
+        <span class="shortcut-label">GitHub</span>
       </a>
       <a class="shortcut-tile" href="https://www.netflix.com" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?sz=64&domain=netflix.com" width="20" height="20" alt="">
-        <span>Netflix</span>
+        <span class="brand-icon brand-icon--lg icon-netflix">N</span>
+        <span class="shortcut-label">Netflix</span>
       </a>
       <a class="shortcut-tile" href="https://twitter.com" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?sz=64&domain=x.com" width="20" height="20" alt="">
-        <span>X</span>
+        <span class="brand-icon brand-icon--lg icon-x">X</span>
+        <span class="shortcut-label">X</span>
       </a>
     </div>
   </div>
@@ -156,13 +144,13 @@
     </div>
 
     <label for="pseudo-input">Votre pseudo</label>
-    <input type="text" id="pseudo-input" placeholder="Ex. Anthony" maxlength="30">
+    <input type="text" id="pseudo-input" placeholder="Ex. KiMi" maxlength="30">
     <p class="settings-error" id="avatar-error" hidden></p>
 
     <div class="settings-row">
       <label for="shortcuts-toggle" class="settings-row-label">Afficher les raccourcis</label>
       <label class="switch">
-        <input type="checkbox" id="shortcuts-toggle" checked>
+        <input type="checkbox" id="shortcuts-toggle">
         <span class="switch-track"></span>
       </label>
     </div>

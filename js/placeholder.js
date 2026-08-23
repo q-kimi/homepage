@@ -18,6 +18,8 @@ const DELETE_SPEED = 38;
 const HOLD_TIME = 1300;
 const GAP_TIME = 300;
 
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 let typingWordIndex = 0;
 let typingCharIndex = 0;
 let isDeleting = false;
@@ -54,6 +56,10 @@ function typeStep() {
 
 function startTyping() {
   if (typingTimer) return;
+  if (prefersReducedMotion) {
+    typedWordEl.textContent = `${typingWords[0]} ?`;
+    return;
+  }
   typeStep();
 }
 

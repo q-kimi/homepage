@@ -18,7 +18,10 @@ export function renderGreeting() {
   greetingText.append(`${word}, `);
 
   if (pseudo) {
-    greetingText.append(pseudo);
+    const pseudoEl = document.createElement("span");
+    pseudoEl.className = "greeting-pseudo";
+    pseudoEl.textContent = pseudo;
+    greetingText.append(pseudoEl);
   } else {
     const placeholder = document.createElement("button");
     placeholder.type = "button";
