@@ -22,12 +22,15 @@
 
     <form class="search-card" id="search-form" autocomplete="off">
       <div class="input-wrap">
-        <input type="text" id="search-input" class="search-input" placeholder="" autofocus>
+        <input type="text" id="search-input" class="search-input" placeholder="" autofocus
+          role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggestions-list" aria-haspopup="listbox">
         <div class="fake-placeholder" id="fake-placeholder" aria-hidden="true">
           <span>Que voulez-vous&nbsp;</span>
           <span class="typed-word" id="typed-word"></span><span class="typed-cursor"></span>
         </div>
       </div>
+
+      <ul class="suggestions-list" id="suggestions-list" role="listbox"></ul>
 
       <div class="toolbar">
         <div class="toolbar-left">
@@ -103,28 +106,7 @@
       </div>
     </form>
 
-    <div class="shortcuts">
-      <a class="shortcut-tile" href="https://www.youtube.com" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?sz=64&domain=youtube.com" width="20" height="20" alt="">
-        <span>YouTube</span>
-      </a>
-      <a class="shortcut-tile" href="https://mail.google.com" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?sz=64&domain=gmail.com" width="20" height="20" alt="">
-        <span>Gmail</span>
-      </a>
-      <a class="shortcut-tile" href="https://github.com" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?sz=64&domain=github.com" width="20" height="20" alt="">
-        <span>GitHub</span>
-      </a>
-      <a class="shortcut-tile" href="https://www.netflix.com" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?sz=64&domain=netflix.com" width="20" height="20" alt="">
-        <span>Netflix</span>
-      </a>
-      <a class="shortcut-tile" href="https://twitter.com" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?sz=64&domain=x.com" width="20" height="20" alt="">
-        <span>X</span>
-      </a>
-    </div>
+    <div class="shortcuts" id="shortcuts"></div>
   </div>
 </main>
 
@@ -168,6 +150,12 @@
         <span class="switch-track"></span>
       </label>
     </div>
+
+    <div class="settings-row">
+      <p class="settings-row-label">Raccourcis</p>
+      <button type="button" class="btn-link" id="shortcuts-add-btn">+ Ajouter</button>
+    </div>
+    <ul class="shortcuts-edit-list" id="shortcuts-edit-list"></ul>
 
     <div class="settings-row">
       <p class="settings-row-label">Page d'accueil / nouvel onglet</p>

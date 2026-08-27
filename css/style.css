@@ -127,6 +127,7 @@ body {
 /* Search card */
 
 .search-card {
+  position: relative;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 24px;
@@ -191,6 +192,95 @@ body {
   50.01%, 100% {
     opacity: 0;
   }
+}
+
+/* Search suggestions (history-based autocomplete) */
+
+.suggestions-list {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  z-index: 20;
+}
+
+.suggestions-list.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.suggestion-item:hover,
+.suggestion-item.active {
+  background: var(--pill-hover);
+}
+
+.suggestion-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--text-dim);
+}
+
+.suggestion-text {
+  flex: 1 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.suggestion-text strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.suggestion-remove {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-dim);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.1s ease, background 0.1s ease, color 0.1s ease;
+}
+
+.suggestion-item:hover .suggestion-remove,
+.suggestion-item.active .suggestion-remove {
+  opacity: 1;
+}
+
+.suggestion-remove:hover {
+  background: var(--border);
+  color: var(--text);
 }
 
 /* Toolbar: search engine selector */
@@ -351,6 +441,7 @@ body {
 
 .shortcuts {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
   margin-top: 24px;
@@ -391,6 +482,10 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+.shortcut-tile span::first-letter {
+  text-transform: uppercase;
 }
 
 /* Settings button */
@@ -659,6 +754,156 @@ body {
 .switch input:focus-visible + .switch-track {
   outline: 2px solid var(--text-dim);
   outline-offset: 2px;
+}
+
+/* Settings modal: shortcuts editor */
+
+.shortcuts-edit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 4px;
+  padding: 2px 4px 2px 0;
+  list-style: none;
+  max-height: 224px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.shortcuts-edit-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.shortcuts-edit-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.shortcuts-edit-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.shortcut-edit-item {
+  background: var(--pill);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 8px 8px 8px 6px;
+  transition: border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.shortcut-edit-item:hover,
+.shortcut-edit-item:focus-within {
+  border-color: var(--border);
+}
+
+.shortcut-edit-item.dragging {
+  opacity: 0.45;
+}
+
+.shortcut-edit-item.drag-over-top {
+  box-shadow: inset 0 2px 0 0 var(--accent);
+}
+
+.shortcut-edit-item.drag-over-bottom {
+  box-shadow: inset 0 -2px 0 0 var(--accent);
+}
+
+.shortcut-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shortcut-edit-grip {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  color: var(--text-dim);
+  cursor: grab;
+  opacity: 0.5;
+  transition: opacity 0.12s ease;
+}
+
+.shortcut-edit-item:hover .shortcut-edit-grip {
+  opacity: 1;
+}
+
+.shortcut-edit-item.dragging .shortcut-edit-grip {
+  cursor: grabbing;
+}
+
+.shortcut-edit-icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+}
+
+.shortcut-edit-name,
+.shortcut-edit-url {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  border-radius: 6px;
+  transition: background 0.12s ease;
+}
+
+.shortcut-edit-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 3px 6px;
+}
+
+.shortcut-edit-name::placeholder,
+.shortcut-edit-url::placeholder {
+  color: var(--text-dim);
+}
+
+.shortcut-edit-url {
+  display: block;
+  width: 100%;
+  margin-top: 2px;
+  padding: 2px 6px 3px 58px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+
+.shortcut-edit-name:focus,
+.shortcut-edit-url:focus {
+  background: var(--card);
+  color: var(--text);
+}
+
+.shortcut-edit-remove {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-dim);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease, background 0.12s ease, color 0.12s ease;
+}
+
+.shortcut-edit-item:hover .shortcut-edit-remove,
+.shortcut-edit-item:focus-within .shortcut-edit-remove {
+  opacity: 1;
+}
+
+.shortcut-edit-remove:hover {
+  background: var(--border);
+  color: var(--text);
 }
 
 /* Settings modal: homepage setup instructions */
