@@ -42,9 +42,14 @@ function normalizeUrl(url) {
   return /^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
 }
 
+const ICON_OVERRIDES = {
+  "mail.google.com": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico",
+};
+
 function faviconUrl(url) {
   try {
     const { hostname } = new URL(normalizeUrl(url));
+    if (ICON_OVERRIDES[hostname]) return ICON_OVERRIDES[hostname];
     return `https://www.google.com/s2/favicons?sz=64&domain=${hostname}`;
   } catch {
     return "";

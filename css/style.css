@@ -292,7 +292,33 @@ body {
 }
 
 .toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   position: relative;
+}
+
+.claude-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--pill);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  border-radius: 50%;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.claude-button:hover {
+  background: var(--pill-hover);
+  color: var(--text);
+}
+
+.claude-button svg {
+  flex: 0 0 auto;
 }
 
 .engine-toggle {

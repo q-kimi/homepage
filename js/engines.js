@@ -7,25 +7,9 @@ const ENGINES = {
     name: "Bing",
     url: "https://www.bing.com/search?q=",
   },
-  duckduckgo: {
-    name: "DuckDuckGo",
-    url: "https://duckduckgo.com/?q=",
-  },
-  yahoo: {
-    name: "Yahoo",
-    url: "https://search.yahoo.com/search?p=",
-  },
   brave: {
     name: "Brave",
     url: "https://search.brave.com/search?q=",
-  },
-  ecosia: {
-    name: "Ecosia",
-    url: "https://www.ecosia.org/search?q=",
-  },
-  qwant: {
-    name: "Qwant",
-    url: "https://www.qwant.com/?q=",
   },
 };
 
