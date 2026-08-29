@@ -458,6 +458,16 @@ body {
   color: var(--text);
 }
 
+.mic-button.mic-blocked {
+  color: #e5484d;
+  border-color: rgba(229, 72, 77, 0.35);
+}
+
+.mic-button.mic-blocked:hover {
+  background: var(--pill-hover);
+  color: #e5484d;
+}
+
 .mic-button.listening {
   background: #e5484d;
   border-color: #e5484d;
