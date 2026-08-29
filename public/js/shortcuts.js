@@ -39,7 +39,18 @@ function saveShortcuts(list) {
 function normalizeUrl(url) {
   const trimmed = url.trim();
   if (!trimmed) return "";
-  return /^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  const withScheme = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+
+  // Only http(s) links are ever rendered as a real href — anything else (javascript:,
+  // data:, vbscript:, and comment/newline tricks meant to smuggle a scheme past the
+  // check above) is rejected here rather than relying on the browser to refuse to
+  // navigate it.
+  try {
+    const parsed = new URL(withScheme);
+    return parsed.protocol === "http:" || parsed.protocol === "https:" ? withScheme : "";
+  } catch {
+    return "";
+  }
 }
 
 const ICON_OVERRIDES = {
@@ -47,8 +58,10 @@ const ICON_OVERRIDES = {
 };
 
 function faviconUrl(url) {
+  const safeUrl = normalizeUrl(url);
+  if (!safeUrl) return "";
   try {
-    const { hostname } = new URL(normalizeUrl(url));
+    const { hostname } = new URL(safeUrl);
     if (ICON_OVERRIDES[hostname]) return ICON_OVERRIDES[hostname];
     return `https://www.google.com/s2/favicons?sz=64&domain=${hostname}`;
   } catch {
@@ -61,11 +74,12 @@ function renderShortcutsRow() {
   shortcutsRow.replaceChildren();
 
   for (const { name, url } of list) {
-    if (!name?.trim() || !url?.trim()) continue;
+    const safeUrl = normalizeUrl(url);
+    if (!name?.trim() || !safeUrl) continue;
 
     const a = document.createElement("a");
     a.className = "shortcut-tile";
-    a.href = normalizeUrl(url);
+    a.href = safeUrl;
     a.target = "_blank";
     a.rel = "noopener";
 
