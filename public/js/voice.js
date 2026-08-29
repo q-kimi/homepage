@@ -13,6 +13,13 @@ if (SpeechRecognitionClass) {
   const BRAVE_BLOCKED_MESSAGE =
     "Brave bloque la dictée vocale par défaut. Autorise-la dans brave://settings/privacy (section reconnaissance vocale).";
 
+  // Warn up front on Brave: the underlying speech service is blocked by
+  // default there, so tell the user on hover instead of only after they've
+  // already clicked and hit a silent failure.
+  if (navigator.brave) {
+    micButton.title = BRAVE_BLOCKED_MESSAGE;
+  }
+
   let listening = false;
   let gotResultOrError = false;
 
