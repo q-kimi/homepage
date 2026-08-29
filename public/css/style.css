@@ -552,6 +552,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 24px;
   background: rgba(0, 0, 0, 0.55);
   opacity: 0;
   visibility: hidden;
@@ -567,11 +568,28 @@ body {
 .settings-modal {
   width: 100%;
   max-width: 340px;
+  max-height: 100%;
+  overflow-y: auto;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 18px;
   padding: 22px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.settings-modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.settings-modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.settings-modal::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
 }
 
 .settings-modal h2 {
@@ -793,6 +811,7 @@ body {
   list-style: none;
   max-height: 224px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }

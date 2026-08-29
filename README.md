@@ -17,36 +17,38 @@ Une page d'accueil personnelle (nouvel onglet) minimaliste, inspirée de Google 
 ```bash
 npm install
 npm run dev       # serveur de dev Vite avec rechargement à chaud
-npm run build     # build de production dans dist/
-npm run preview   # sert le build de production localement
 ```
 
-Le serveur de dev tourne sur `http://localhost:5173` par défaut.
+Le serveur de dev tourne sur `http://localhost:5173` par défaut. Il n'y a pas d'étape de build : le site est du HTML/CSS/JS pur, servi tel quel en production (voir Déploiement ci-dessous).
 
 ## Structure du projet
 
 ```
 homepage/
 ├── index.html          # Structure de la page
-├── vite.config.js       # Configuration Vite
-├── Dockerfile            # Build multi-stage (Node -> Nginx)
-├── nginx.conf            # Config Nginx (gzip, cache assets)
+├── vite.config.js       # Configuration Vite (dev uniquement)
+├── Dockerfile            # Image Nginx qui sert les fichiers tels quels
+├── nginx.conf            # Config Nginx (gzip, cache)
 ├── .dockerignore
-├── css/
-│   └── style.css        # Styles
-└── js/
-    ├── main.js           # Point d'entrée, importe les modules dans l'ordre
-    ├── engines.js        # Sélecteur de moteur de recherche + soumission du formulaire
-    ├── placeholder.js     # Effet machine à écrire du placeholder
-    ├── greeting.js        # Message de salutation
-    ├── avatar.js           # Gestion de l'avatar de profil
-    ├── settings.js         # Modale de paramètres (pseudo + avatar)
-    └── voice.js            # Dictée vocale (Web Speech API)
+└── public/
+    ├── favicon.svg
+    ├── css/
+    │   └── style.css    # Styles
+    └── js/
+        ├── main.js       # Point d'entrée, importe les modules dans l'ordre
+        ├── engines.js     # Sélecteur de moteur de recherche + soumission du formulaire
+        ├── autocomplete.js # Suggestions basées sur l'historique de recherche
+        ├── placeholder.js  # Effet machine à écrire du placeholder
+        ├── greeting.js     # Message de salutation
+        ├── avatar.js        # Gestion de l'avatar de profil
+        ├── shortcuts.js      # Raccourcis (ajout/édition/suppression/glisser-déposer)
+        ├── settings.js        # Modale de paramètres
+        └── voice.js            # Dictée vocale (Web Speech API)
 ```
 
 ## Déploiement (Docker / Dokploy)
 
-Le `Dockerfile` fait un build multi-stage : compilation avec Node puis service statique via Nginx (image finale légère, sans Node ni `node_modules`).
+Le `Dockerfile` copie `index.html` et `public/` directement dans l'image Nginx — aucun build, aucun Node dans l'image finale. C'est volontaire : un build Vite renommerait `main.js`/`style.css` avec un hash à chaque déploiement, et un onglet ouvert au moment du redéploiement se retrouverait à demander les anciens fichiers hashés, qui n'existent plus → page sans style. En servant des noms de fichiers stables, ce risque disparaît.
 
 ```bash
 docker build -t homepage .
