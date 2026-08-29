@@ -45,7 +45,9 @@ if (SpeechRecognitionClass) {
     } else if (e.error === "audio-capture") {
       micButton.title = "Aucun micro détecté sur cet appareil.";
     } else if (e.error === "network") {
-      micButton.title = "Connexion internet requise pour la dictée vocale.";
+      micButton.title = navigator.brave
+        ? "Brave bloque la dictée vocale par défaut. Autorise-la dans brave://settings/privacy (section reconnaissance vocale)."
+        : "Connexion internet requise pour la dictée vocale.";
     } else {
       micButton.title = `Dictée vocale indisponible (${e.error}).`;
     }
