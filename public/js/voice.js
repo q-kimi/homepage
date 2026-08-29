@@ -138,6 +138,15 @@ if (SpeechRecognitionClass) {
       recognition.stop();
       return;
     }
+
+    // Starting recognition here is what triggers the browser's mic
+    // permission prompt — pointless on Brave, since the request will fail
+    // regardless once past that point. Skip it entirely until a session has
+    // actually proven it works.
+    if (navigator.brave && localStorage.getItem(BRAVE_VOICE_ENABLED_KEY) !== "1") {
+      return;
+    }
+
     input.focus();
     recognition.start();
   });
