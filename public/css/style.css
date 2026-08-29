@@ -408,6 +408,7 @@ body {
 }
 
 .mic-button {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -419,6 +420,37 @@ body {
   border-radius: 50%;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.mic-button[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: -6px;
+  width: max-content;
+  max-width: 230px;
+  padding: 8px 10px;
+  background: #1c1c1e;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: left;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.mic-button[data-tooltip]:hover::after,
+.mic-button[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .mic-button:hover {

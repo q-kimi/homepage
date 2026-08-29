@@ -17,7 +17,7 @@ if (SpeechRecognitionClass) {
   // default there, so tell the user on hover instead of only after they've
   // already clicked and hit a silent failure.
   if (navigator.brave) {
-    micButton.title = BRAVE_BLOCKED_MESSAGE;
+    micButton.dataset.tooltip = BRAVE_BLOCKED_MESSAGE;
   }
 
   let listening = false;
@@ -49,7 +49,7 @@ if (SpeechRecognitionClass) {
     // "error" event at all) when it blocks the underlying speech service —
     // this is the only place that case is ever observable.
     if (!gotResultOrError) {
-      micButton.title = navigator.brave
+      micButton.dataset.tooltip = navigator.brave
         ? BRAVE_BLOCKED_MESSAGE
         : "La dictée vocale s'est arrêtée sans résultat. Réessaie, ou vérifie les autorisations du micro dans ton navigateur.";
     }
@@ -62,15 +62,15 @@ if (SpeechRecognitionClass) {
     console.error("Dictée vocale : erreur ->", e.error);
 
     if (e.error === "not-allowed" || e.error === "service-not-allowed") {
-      micButton.title = "Accès au micro refusé. Autorise le micro pour cette page dans ton navigateur.";
+      micButton.dataset.tooltip = "Accès au micro refusé. Autorise le micro pour cette page dans ton navigateur.";
     } else if (e.error === "no-speech") {
-      micButton.title = "Aucune voix détectée, réessaie.";
+      micButton.dataset.tooltip = "Aucune voix détectée, réessaie.";
     } else if (e.error === "audio-capture") {
-      micButton.title = "Aucun micro détecté sur cet appareil.";
+      micButton.dataset.tooltip = "Aucun micro détecté sur cet appareil.";
     } else if (e.error === "network") {
-      micButton.title = navigator.brave ? BRAVE_BLOCKED_MESSAGE : "Connexion internet requise pour la dictée vocale.";
+      micButton.dataset.tooltip = navigator.brave ? BRAVE_BLOCKED_MESSAGE : "Connexion internet requise pour la dictée vocale.";
     } else {
-      micButton.title = `Dictée vocale indisponible (${e.error}).`;
+      micButton.dataset.tooltip = `Dictée vocale indisponible (${e.error}).`;
     }
   });
 
@@ -84,5 +84,5 @@ if (SpeechRecognitionClass) {
   });
 } else {
   micButton.disabled = true;
-  micButton.title = "Dictée vocale non supportée par ce navigateur";
+  micButton.dataset.tooltip = "Dictée vocale non supportée par ce navigateur";
 }
