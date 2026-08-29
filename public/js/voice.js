@@ -10,16 +10,22 @@ if (SpeechRecognitionClass) {
   recognition.interimResults = true;
   recognition.continuous = false;
 
+  const BRAVE_BLOCKED_MESSAGE =
+    "Brave bloque la dictée vocale par défaut. Autorise-la dans brave://settings/privacy (section reconnaissance vocale).";
+
   let listening = false;
+  let gotResultOrError = false;
 
   recognition.addEventListener("start", () => {
     listening = true;
+    gotResultOrError = false;
     micButton.classList.add("listening");
     input.value = "";
     syncFakePlaceholder();
   });
 
   recognition.addEventListener("result", (e) => {
+    gotResultOrError = true;
     let transcript = "";
     for (const result of e.results) {
       transcript += result[0].transcript;
@@ -31,10 +37,20 @@ if (SpeechRecognitionClass) {
   recognition.addEventListener("end", () => {
     listening = false;
     micButton.classList.remove("listening");
+
+    // Brave silently starts then immediately ends the session (no "result", no
+    // "error" event at all) when it blocks the underlying speech service —
+    // this is the only place that case is ever observable.
+    if (!gotResultOrError) {
+      micButton.title = navigator.brave
+        ? BRAVE_BLOCKED_MESSAGE
+        : "La dictée vocale s'est arrêtée sans résultat. Réessaie, ou vérifie les autorisations du micro dans ton navigateur.";
+    }
   });
 
   recognition.addEventListener("error", (e) => {
     listening = false;
+    gotResultOrError = true;
     micButton.classList.remove("listening");
     console.error("Dictée vocale : erreur ->", e.error);
 
@@ -45,9 +61,7 @@ if (SpeechRecognitionClass) {
     } else if (e.error === "audio-capture") {
       micButton.title = "Aucun micro détecté sur cet appareil.";
     } else if (e.error === "network") {
-      micButton.title = navigator.brave
-        ? "Brave bloque la dictée vocale par défaut. Autorise-la dans brave://settings/privacy (section reconnaissance vocale)."
-        : "Connexion internet requise pour la dictée vocale.";
+      micButton.title = navigator.brave ? BRAVE_BLOCKED_MESSAGE : "Connexion internet requise pour la dictée vocale.";
     } else {
       micButton.title = `Dictée vocale indisponible (${e.error}).`;
     }
