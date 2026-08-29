@@ -21,8 +21,12 @@ if (SpeechRecognitionClass) {
   recognition.interimResults = true;
   recognition.continuous = false;
 
+  // Brave has no user-facing setting to enable this: it blocks the
+  // underlying (Google-run) speech recognition service by design, with no
+  // toggle exposed anywhere in its settings. See brave/brave-browser#10126
+  // and #18569 on GitHub — a years-old, still-unresolved limitation.
   const BRAVE_BLOCKED_MESSAGE =
-    "Brave bloque la dictée vocale par défaut. Autorise-la dans brave://settings/privacy (section reconnaissance vocale).";
+    "Brave ne supporte pas la dictée vocale : il bloque le service de reconnaissance vocale sans réglage pour l'activer. Utilise Chrome ou Edge pour cette fonctionnalité.";
 
   // Brave blocks its speech service by default and gives no way to query the
   // setting directly, so we track the only signal we actually get: whether a
@@ -33,7 +37,7 @@ if (SpeechRecognitionClass) {
   function showBlockedIcon() {
     micButton.innerHTML = MIC_OFF_ICON;
     micButton.classList.add("mic-blocked");
-    micButton.setAttribute("aria-label", "Dictée vocale bloquée sur Brave");
+    micButton.setAttribute("aria-label", "Dictée vocale non disponible sur Brave");
     micButton.dataset.tooltip = BRAVE_BLOCKED_MESSAGE;
   }
 
