@@ -16,7 +16,7 @@ function applyShortcutsVisibility(hidden) {
 }
 
 const storedShortcutsHidden = localStorage.getItem(SHORTCUTS_HIDDEN_KEY);
-const shortcutsHidden = storedShortcutsHidden === null ? true : storedShortcutsHidden === "true";
+const shortcutsHidden = storedShortcutsHidden === null ? false : storedShortcutsHidden === "true";
 shortcutsToggle.checked = !shortcutsHidden;
 applyShortcutsVisibility(shortcutsHidden);
 
