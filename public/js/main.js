@@ -1,8 +1,10 @@
 import "./engines.js";
+import "./phrases.js";
 import "./placeholder.js";
 import "./autocomplete.js";
 import "./greeting.js";
 import "./avatar.js";
 import "./shortcuts.js";
 import "./settings.js";
+import "./ai-picker.js";
 import "./voice.js";

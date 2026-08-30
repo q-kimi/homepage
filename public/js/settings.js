@@ -8,11 +8,13 @@ const settingsOverlay = document.getElementById("settings-overlay");
 const settingsCancel = document.getElementById("settings-cancel");
 const settingsSave = document.getElementById("settings-save");
 const pseudoInput = document.getElementById("pseudo-input");
-const shortcuts = document.querySelector(".shortcuts");
+const shortcuts = document.getElementById("shortcuts-wrap");
 const shortcutsToggle = document.getElementById("shortcuts-toggle");
+const shortcutsEditor = document.getElementById("shortcuts-editor");
 
 function applyShortcutsVisibility(hidden) {
   shortcuts.hidden = hidden;
+  shortcutsEditor.hidden = hidden;
 }
 
 const storedShortcutsHidden = localStorage.getItem(SHORTCUTS_HIDDEN_KEY);
@@ -67,7 +69,15 @@ function getBrowserInstructions() {
       steps: [
         { label: "", text: "Choisis « Ouvrir une page spécifique » et colle l'URL." },
         { label: "Page d'accueil", text: "Paramètres > Apparence > active « Afficher le bouton Accueil » et colle l'URL." },
-        { label: "Nouvel onglet", text: "non personnalisable nativement ; une extension comme « New Tab Redirect » est nécessaire." },
+        {
+          label: "Nouvel onglet",
+          text: "non personnalisable nativement ; une extension comme ",
+          link: {
+            text: "Change New Tab",
+            href: "https://chromewebstore.google.com/detail/change-new-tab/mocklpfdimiadpbgamlgehpgpodggahe",
+          },
+          after: " est nécessaire.",
+        },
       ],
     };
   }
@@ -95,13 +105,26 @@ function renderHomepageInstructions() {
 
   for (const step of steps) {
     const item = document.createElement("li");
+
     if (step.label) {
       const label = document.createElement("strong");
       label.textContent = `${step.label} : `;
-      item.append(label, step.text);
-    } else {
-      item.textContent = step.text;
+      item.append(label);
     }
+
+    item.append(step.text);
+
+    if (step.link) {
+      const a = document.createElement("a");
+      a.href = step.link.href;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.className = "instructions-link";
+      a.textContent = step.link.text;
+      item.append(a);
+      if (step.after) item.append(step.after);
+    }
+
     homepageInstructionsList.append(item);
   }
 }
@@ -143,8 +166,19 @@ settingsToggle.addEventListener("click", openSettings);
 settingsCancel.addEventListener("click", closeSettings);
 document.addEventListener("open-settings", openSettings);
 
+// Track where the mousedown started so a text-selection drag that begins
+// inside the modal and ends up over the backdrop (releasing there) doesn't
+// register as a "click on the backdrop" and close the modal.
+let overlayMouseDownTarget = null;
+
+settingsOverlay.addEventListener("mousedown", (e) => {
+  overlayMouseDownTarget = e.target;
+});
+
 settingsOverlay.addEventListener("click", (e) => {
-  if (e.target === settingsOverlay) closeSettings();
+  if (e.target === settingsOverlay && overlayMouseDownTarget === settingsOverlay) {
+    closeSettings();
+  }
 });
 
 settingsSave.addEventListener("click", () => {

@@ -27,18 +27,41 @@
     <linearGradient id="engine-brave-b" x1="2%" y1="51%" y2="51%">
       <stop offset="0" stop-color="#ff452a"/><stop offset="1" stop-color="#ff2000"/>
     </linearGradient>
+    <radialGradient id="ai-copilot-0" cx="85.44%" cy="100.653%" fx="85.44%" fy="100.653%" gradientTransform="scale(-.8553 -1) rotate(50.927 2.041 -1.946)" r="105.116%">
+      <stop offset="9.6%" stop-color="#00AEFF"/><stop offset="77.3%" stop-color="#2253CE"/><stop offset="100%" stop-color="#0736C4"/>
+    </radialGradient>
+    <radialGradient id="ai-copilot-1" cx="18.143%" cy="32.928%" fx="18.143%" fy="32.928%" gradientTransform="scale(.8897 1) rotate(52.069 .193 .352)" r="95.612%">
+      <stop offset="0%" stop-color="#FFB657"/><stop offset="63.4%" stop-color="#FF5F3D"/><stop offset="92.3%" stop-color="#C02B3C"/>
+    </radialGradient>
+    <linearGradient id="ai-copilot-2" x1="39.465%" x2="46.884%" y1="12.117%" y2="103.774%">
+      <stop offset="15.6%" stop-color="#0D91E1"/><stop offset="48.7%" stop-color="#52B471"/><stop offset="65.2%" stop-color="#98BD42"/><stop offset="93.7%" stop-color="#FFC800"/>
+    </linearGradient>
+    <linearGradient id="ai-copilot-3" x1="45.949%" x2="50%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#3DCBFF"/><stop offset="24.7%" stop-color="#0588F7" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="ai-copilot-4" cx="82.987%" cy="-9.792%" fx="82.987%" fy="-9.792%" gradientTransform="scale(-1 -.9441) rotate(-70.872 .142 1.17)" r="140.622%">
+      <stop offset="6.6%" stop-color="#8C48FF"/><stop offset="50%" stop-color="#F2598A"/><stop offset="89.6%" stop-color="#FFB152"/>
+    </radialGradient>
+    <linearGradient id="ai-copilot-5" x1="83.507%" x2="83.453%" y1="-6.106%" y2="21.131%">
+      <stop offset="5.8%" stop-color="#F8ADFA"/><stop offset="70.8%" stop-color="#A86EDD" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="ai-gemini-0" gradientUnits="userSpaceOnUse" x1="7" x2="11" y1="15.5" y2="12">
+      <stop stop-color="#08B962"/><stop offset="1" stop-color="#08B962" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="ai-gemini-1" gradientUnits="userSpaceOnUse" x1="8" x2="11.5" y1="5.5" y2="11">
+      <stop stop-color="#F94543"/><stop offset="1" stop-color="#F94543" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="ai-gemini-2" gradientUnits="userSpaceOnUse" x1="3.5" x2="17.5" y1="13.5" y2="12">
+      <stop stop-color="#FABC12"/><stop offset=".46" stop-color="#FABC12" stop-opacity="0"/>
+    </linearGradient>
   </defs>
 </svg>
 
 <main class="page">
   <div class="hero">
-    <div class="greeting-row">
-      <span class="avatar-badge" id="avatar-badge" hidden></span>
-      <h1 class="heading">
-        <span id="greeting-text">Bonjour</span>
-        <span class="greeting-emoji" id="greeting-emoji"></span>
-      </h1>
-    </div>
+    <h1 class="heading">
+      <span id="hero-phrase"></span>
+    </h1>
 
     <form class="search-card" id="search-form" autocomplete="off">
       <div class="input-wrap">
@@ -91,11 +114,7 @@
             </li>
           </ul>
 
-          <a class="claude-button" href="https://claude.ai/new" target="_blank" rel="noopener" aria-label="Ouvrir Claude">
-            <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z" fill="#D97757" fill-rule="nonzero"/>
-            </svg>
-          </a>
+          <a class="ai-button" id="ai-button" href="https://claude.ai/?utm_source=avenuedelia" target="_blank" rel="noopener" aria-label="Ouvrir Claude"></a>
         </div>
 
         <div class="toolbar-right">
@@ -116,13 +135,36 @@
       </div>
     </form>
 
-    <div class="shortcuts" id="shortcuts"></div>
+    <div class="shortcuts-wrap" id="shortcuts-wrap">
+      <button type="button" class="shortcuts-nav shortcuts-nav-prev" id="shortcuts-prev" aria-label="Raccourcis précédents" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="shortcuts-viewport">
+        <div class="shortcuts" id="shortcuts"></div>
+      </div>
+      <button type="button" class="shortcuts-nav shortcuts-nav-next" id="shortcuts-next" aria-label="Raccourcis suivants" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
   </div>
 </main>
 
-<button type="button" class="settings-toggle" id="settings-toggle" aria-label="Paramètres">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8.68637 4.00008L11.293 1.39348C11.6835 1.00295 12.3167 1.00295 12.7072 1.39348L15.3138 4.00008H19.0001C19.5524 4.00008 20.0001 4.4478 20.0001 5.00008V8.68637L22.6067 11.293C22.9972 11.6835 22.9972 12.3167 22.6067 12.7072L20.0001 15.3138V19.0001C20.0001 19.5524 19.5524 20.0001 19.0001 20.0001H15.3138L12.7072 22.6067C12.3167 22.9972 11.6835 22.9972 11.293 22.6067L8.68637 20.0001H5.00008C4.4478 20.0001 4.00008 19.5524 4.00008 19.0001V15.3138L1.39348 12.7072C1.00295 12.3167 1.00295 11.6835 1.39348 11.293L4.00008 8.68637V5.00008C4.00008 4.4478 4.4478 4.00008 5.00008 4.00008H8.68637ZM6.00008 6.00008V9.5148L3.5148 12.0001L6.00008 14.4854V18.0001H9.5148L12.0001 20.4854L14.4854 18.0001H18.0001V14.4854L20.4854 12.0001L18.0001 9.5148V6.00008H14.4854L12.0001 3.5148L9.5148 6.00008H6.00008ZM12.0001 16.0001C9.79094 16.0001 8.00008 14.2092 8.00008 12.0001C8.00008 9.79094 9.79094 8.00008 12.0001 8.00008C14.2092 8.00008 16.0001 9.79094 16.0001 12.0001C16.0001 14.2092 14.2092 16.0001 12.0001 16.0001ZM12.0001 14.0001C13.1047 14.0001 14.0001 13.1047 14.0001 12.0001C14.0001 10.8955 13.1047 10.0001 12.0001 10.0001C10.8955 10.0001 10.0001 10.8955 10.0001 12.0001C10.0001 13.1047 10.8955 14.0001 12.0001 14.0001Z"></path></svg>
-</button>
+<div class="corner-bar" id="corner-bar">
+  <div class="identity-badge" id="identity-badge">
+    <span class="avatar-badge" id="avatar-badge" hidden></span>
+    <span class="identity-text">
+      <span id="greeting-text">Bonjour</span>
+    </span>
+  </div>
+
+  <button type="button" class="settings-toggle" id="settings-toggle" aria-label="Paramètres">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8.68637 4.00008L11.293 1.39348C11.6835 1.00295 12.3167 1.00295 12.7072 1.39348L15.3138 4.00008H19.0001C19.5524 4.00008 20.0001 4.4478 20.0001 5.00008V8.68637L22.6067 11.293C22.9972 11.6835 22.9972 12.3167 22.6067 12.7072L20.0001 15.3138V19.0001C20.0001 19.5524 19.5524 20.0001 19.0001 20.0001H15.3138L12.7072 22.6067C12.3167 22.9972 11.6835 22.9972 11.293 22.6067L8.68637 20.0001H5.00008C4.4478 20.0001 4.00008 19.5524 4.00008 19.0001V15.3138L1.39348 12.7072C1.00295 12.3167 1.00295 11.6835 1.39348 11.293L4.00008 8.68637V5.00008C4.00008 4.4478 4.4478 4.00008 5.00008 4.00008H8.68637ZM6.00008 6.00008V9.5148L3.5148 12.0001L6.00008 14.4854V18.0001H9.5148L12.0001 20.4854L14.4854 18.0001H18.0001V14.4854L20.4854 12.0001L18.0001 9.5148V6.00008H14.4854L12.0001 3.5148L9.5148 6.00008H6.00008ZM12.0001 16.0001C9.79094 16.0001 8.00008 14.2092 8.00008 12.0001C8.00008 9.79094 9.79094 8.00008 12.0001 8.00008C14.2092 8.00008 16.0001 9.79094 16.0001 12.0001C16.0001 14.2092 14.2092 16.0001 12.0001 16.0001ZM12.0001 14.0001C13.1047 14.0001 14.0001 13.1047 14.0001 12.0001C14.0001 10.8955 13.1047 10.0001 12.0001 10.0001C10.8955 10.0001 10.0001 10.8955 10.0001 12.0001C10.0001 13.1047 10.8955 14.0001 12.0001 14.0001Z"></path></svg>
+  </button>
+</div>
 
 <div class="settings-overlay" id="settings-overlay">
   <div class="settings-modal">
@@ -162,10 +204,17 @@
     </div>
 
     <div class="settings-row">
-      <p class="settings-row-label">Raccourcis</p>
-      <button type="button" class="btn-link" id="shortcuts-add-btn">+ Ajouter</button>
+      <p class="settings-row-label">Bouton IA</p>
     </div>
-    <ul class="shortcuts-edit-list" id="shortcuts-edit-list"></ul>
+    <div class="ai-picker" id="ai-picker"></div>
+
+    <div id="shortcuts-editor">
+      <div class="settings-row">
+        <p class="settings-row-label">Raccourcis</p>
+        <button type="button" class="btn-link" id="shortcuts-add-btn">+ Ajouter</button>
+      </div>
+      <ul class="shortcuts-edit-list" id="shortcuts-edit-list"></ul>
+    </div>
 
     <div class="settings-row">
       <p class="settings-row-label">Page d'accueil / nouvel onglet</p>

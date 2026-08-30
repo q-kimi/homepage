@@ -41,17 +41,9 @@ body {
 
 /* Greeting */
 
-.greeting-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
 .avatar-badge {
-  width: 40px;
-  height: 40px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background-color: var(--pill);
   background-size: cover;
@@ -65,17 +57,27 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  margin: 0;
+  margin: 0 0 20px;
   font-size: 32px;
   font-weight: 600;
+  font-style: italic;
   letter-spacing: -0.5px;
   text-align: center;
 }
 
-.greeting-emoji {
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
+.hero-phrase-emoji {
+  display: inline-block;
+  font-style: normal;
+  animation: hero-emoji-bounce 1.8s ease-in-out infinite;
+}
+
+@keyframes hero-emoji-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 .greeting-pseudo {
@@ -96,32 +98,6 @@ body {
 
 .greeting-placeholder:hover {
   color: var(--accent);
-}
-
-.greeting-emoji.wave {
-  animation: wave 1.6s ease-in-out infinite;
-  transform-origin: 70% 70%;
-}
-
-@keyframes wave {
-  0%, 60%, 100% {
-    transform: rotate(0deg);
-  }
-  10% {
-    transform: rotate(14deg);
-  }
-  20% {
-    transform: rotate(-8deg);
-  }
-  30% {
-    transform: rotate(14deg);
-  }
-  40% {
-    transform: rotate(-4deg);
-  }
-  50% {
-    transform: rotate(10deg);
-  }
 }
 
 /* Search card */
@@ -298,7 +274,7 @@ body {
   position: relative;
 }
 
-.claude-button {
+.ai-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -312,13 +288,44 @@ body {
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-.claude-button:hover {
+.ai-button:hover {
   background: var(--pill-hover);
   color: var(--text);
 }
 
-.claude-button svg {
+.ai-button svg {
   flex: 0 0 auto;
+}
+
+.ai-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 4px;
+}
+
+.ai-picker-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: var(--pill);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.ai-picker-option:hover {
+  background: var(--pill-hover);
+  color: var(--text);
+}
+
+.ai-picker-option.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 
 .engine-toggle {
@@ -412,8 +419,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   background: var(--pill);
   border: 1px solid var(--border);
   color: var(--text-dim);
@@ -507,15 +514,69 @@ body {
 
 /* Shortcuts */
 
+.shortcuts-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  margin-top: 24px;
+}
+
+.shortcuts-wrap[hidden] {
+  display: none;
+}
+
+.shortcuts-viewport {
+  position: relative;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.shortcuts-wrap.paginated .shortcuts-viewport {
+  width: 564px; /* 7 tiles (72px) + 6 gaps (10px) — keep in sync with PAGE_SIZE in shortcuts.js */
+  padding: 4px 0;
+}
+
 .shortcuts {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  margin-top: 24px;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.shortcuts[hidden] {
+.shortcuts-wrap.paginated .shortcuts {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  width: max-content;
+}
+
+.shortcuts-nav {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 56px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.shortcuts-nav:hover:not(:disabled) {
+  background: var(--pill-hover);
+  color: var(--text);
+}
+
+.shortcuts-nav:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.shortcuts-nav[hidden] {
   display: none;
 }
 
@@ -523,6 +584,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-shrink: 0;
   gap: 8px;
   width: 72px;
   padding: 12px 8px;
@@ -543,6 +605,18 @@ body {
   border-radius: 5px;
 }
 
+.shortcut-tile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.shortcut-tile:hover .shortcut-tile-icon {
+  color: #ffffff;
+}
+
 .shortcut-tile span {
   font-size: 12px;
   text-align: center;
@@ -556,12 +630,34 @@ body {
   text-transform: uppercase;
 }
 
-/* Settings button */
+/* Corner bar: identity badge + settings button */
 
-.settings-toggle {
+.corner-bar {
   position: fixed;
   right: 20px;
   bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.identity-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.identity-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+/* Settings button */
+
+.settings-toggle {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -763,6 +859,15 @@ body {
   color: var(--text);
 }
 
+.instructions-link {
+  color: var(--text-dim);
+  text-decoration: underline;
+}
+
+.instructions-link:hover {
+  color: var(--text);
+}
+
 .settings-error {
   margin: -8px 0 12px;
   font-size: 12px;
@@ -924,8 +1029,18 @@ body {
 
 .shortcut-edit-icon {
   flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 20px;
   height: 20px;
+  border-radius: 5px;
+  color: var(--text-dim);
+}
+
+.shortcut-edit-icon img {
+  width: 100%;
+  height: 100%;
   border-radius: 5px;
 }
 
@@ -1068,9 +1183,13 @@ body {
 /* Respect reduced-motion preference */
 
 @media (prefers-reduced-motion: reduce) {
-  .greeting-emoji.wave,
   .typed-cursor,
-  .mic-button.listening {
+  .mic-button.listening,
+  .hero-phrase-emoji {
     animation: none;
+  }
+
+  .shortcuts {
+    transition: none;
   }
 }

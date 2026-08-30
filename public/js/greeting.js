@@ -1,7 +1,6 @@
 export const PSEUDO_KEY = "homepage.pseudo";
 
 const greetingText = document.getElementById("greeting-text");
-const greetingEmoji = document.getElementById("greeting-emoji");
 
 function getGreetingWord() {
   const now = new Date();
@@ -31,14 +30,6 @@ export function renderGreeting() {
       document.dispatchEvent(new CustomEvent("open-settings"));
     });
     greetingText.append(placeholder);
-  }
-
-  if (word === "Bonjour") {
-    greetingEmoji.textContent = "👋";
-    greetingEmoji.classList.add("wave");
-  } else {
-    greetingEmoji.textContent = "🌙";
-    greetingEmoji.classList.remove("wave");
   }
 }
 
