@@ -86,6 +86,9 @@ if (SpeechRecognitionClass) {
   recognition.addEventListener("result", (e) => {
     gotResultOrError = true;
     if (navigator.brave) markBraveVoiceEnabled();
+    // Clear out any leftover error/warning tooltip from a previous failed
+    // attempt now that a session has actually produced a result.
+    delete micButton.dataset.tooltip;
 
     let transcript = "";
     for (const result of e.results) {
