@@ -14,7 +14,6 @@ const PHRASES = [
   { text: "On lance les recherches ?" },
   { text: "Internet n'attend que toi" },
   { text: "Une idée derrière la tête ?", emoji: "💡" },
-  { text: "Qu'as-tu en tête ?" },
   { text: "Le web est grand ouvert", emoji: "🌍" },
   { text: "Une petite recherche s'impose ?" },
   { text: "On chasse l'info ?", emoji: "🎯" },
