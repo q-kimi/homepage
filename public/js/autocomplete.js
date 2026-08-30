@@ -1,5 +1,6 @@
 import { form, input } from "./engines.js";
 import { syncFakePlaceholder } from "./placeholder.js";
+import { onClickOutside, readJsonArray } from "./dom-utils.js";
 
 const HISTORY_KEY = "homepage.searchHistory";
 const MAX_HISTORY = 50;
@@ -17,12 +18,7 @@ const REMOVE_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"
 </svg>`;
 
 function loadHistory() {
-  try {
-    const raw = JSON.parse(localStorage.getItem(HISTORY_KEY));
-    return Array.isArray(raw) ? raw.filter((q) => typeof q === "string") : [];
-  } catch {
-    return [];
-  }
+  return readJsonArray(HISTORY_KEY, { filter: (q) => typeof q === "string" }) ?? [];
 }
 
 function saveHistory(history) {
@@ -168,11 +164,7 @@ input.addEventListener("keydown", (e) => {
   }
 });
 
-document.addEventListener("click", (e) => {
-  if (!list.contains(e.target) && e.target !== input) {
-    closeSuggestions();
-  }
-});
+onClickOutside([list, input], closeSuggestions);
 
 form.addEventListener("submit", () => {
   rememberQuery(input.value);

@@ -1,14 +1,14 @@
 # Homepage
 
-Une page d'accueil personnelle (nouvel onglet) minimaliste, inspirée de Google : barre de recherche multi-moteurs, salutation personnalisée, raccourcis, dictée vocale et avatar — le tout en HTML/CSS/JS, servi via [Vite](https://vitejs.dev).
+Une page d'accueil personnelle (nouvel onglet) minimaliste, inspirée de Google : barre de recherche multi-moteurs, raccourcis personnalisables, dictée vocale et accès rapide à plusieurs assistants IA — le tout en HTML/CSS/JS, servi via [Vite](https://vitejs.dev) en développement.
 
 ## Fonctionnalités
 
-- **Recherche multi-moteurs** : Google, Bing, DuckDuckGo, Yahoo, Brave, Ecosia, Qwant (choix mémorisé).
-- **Placeholder animé** façon machine à écrire.
-- **Salutation dynamique** (Bonjour / Bonsoir selon l'heure) avec pseudo personnalisable.
-- **Avatar** de profil (stocké localement dans le navigateur).
-- **Raccourcis** vers des sites fréquents.
+- **Recherche multi-moteurs** : Google, Bing, Brave (choix mémorisé).
+- **Placeholder animé** façon machine à écrire, avec suggestions basées sur l'historique de recherche.
+- **Phrase d'accueil** aléatoire, renouvelée toutes les 30 minutes.
+- **Raccourcis personnalisables** vers des sites fréquents : ajout, édition, suppression, réorganisation par glisser-déposer, pagination au-delà de 7.
+- **Raccourcis IA** au choix : Claude, ChatGPT, Grok, Copilot, Gemini, Mistral AI, HuggingChat.
 - **Dictée vocale** via la Web Speech API (quand le navigateur la supporte).
 - **Aucune donnée envoyée à un serveur** : tout est stocké dans le `localStorage` du navigateur.
 
@@ -35,15 +35,16 @@ homepage/
     ├── css/
     │   └── style.css    # Styles
     └── js/
-        ├── main.js       # Point d'entrée, importe les modules dans l'ordre
-        ├── engines.js     # Sélecteur de moteur de recherche + soumission du formulaire
-        ├── autocomplete.js # Suggestions basées sur l'historique de recherche
-        ├── placeholder.js  # Effet machine à écrire du placeholder
-        ├── greeting.js     # Message de salutation
-        ├── avatar.js        # Gestion de l'avatar de profil
-        ├── shortcuts.js      # Raccourcis (ajout/édition/suppression/glisser-déposer)
-        ├── settings.js        # Modale de paramètres
-        └── voice.js            # Dictée vocale (Web Speech API)
+        ├── main.js        # Point d'entrée, importe les modules dans l'ordre
+        ├── dom-utils.js    # Helpers partagés (clic extérieur, touche Échap, lecture localStorage)
+        ├── engines.js       # Sélecteur de moteur de recherche + soumission du formulaire
+        ├── autocomplete.js   # Suggestions basées sur l'historique de recherche
+        ├── placeholder.js     # Effet machine à écrire du placeholder
+        ├── phrases.js          # Phrase d'accueil aléatoire (rotation toutes les 30 min)
+        ├── shortcuts.js         # Raccourcis (ajout/édition/suppression/glisser-déposer/pagination)
+        ├── ai-picker.js          # Sélecteur d'assistant IA
+        ├── settings.js            # Modale de paramètres
+        └── voice.js                # Dictée vocale (Web Speech API)
 ```
 
 ## Déploiement (Docker / Dokploy)

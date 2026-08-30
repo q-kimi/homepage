@@ -68,6 +68,8 @@ if (SpeechRecognitionClass) {
 
   if (navigator.brave && localStorage.getItem(BRAVE_VOICE_ENABLED_KEY) !== "1") {
     showBlockedIcon();
+  } else {
+    showNormalIcon();
   }
 
   let listening = false;
@@ -126,7 +128,7 @@ if (SpeechRecognitionClass) {
       if (navigator.brave) {
         markBraveVoiceBlocked();
       } else {
-        micButton.dataset.tooltip = "Connexion internet requise pour la dictée vocale.";
+        micButton.dataset.tooltip = "Connexion Internet requise pour la dictée vocale.";
       }
     } else {
       micButton.dataset.tooltip = `Dictée vocale indisponible (${e.error}).`;
@@ -151,6 +153,7 @@ if (SpeechRecognitionClass) {
     recognition.start();
   });
 } else {
+  micButton.innerHTML = MIC_ICON;
   micButton.disabled = true;
-  micButton.dataset.tooltip = "Dictée vocale non supportée par ce navigateur";
+  micButton.dataset.tooltip = "Dictée vocale non supportée par ce navigateur.";
 }

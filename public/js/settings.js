@@ -1,5 +1,4 @@
-import { PSEUDO_KEY, renderGreeting } from "./greeting.js";
-import { showAvatarError } from "./avatar.js";
+import { onEscape } from "./dom-utils.js";
 
 const SHORTCUTS_HIDDEN_KEY = "homepage.shortcuts.hidden";
 
@@ -7,7 +6,6 @@ const settingsToggle = document.getElementById("settings-toggle");
 const settingsOverlay = document.getElementById("settings-overlay");
 const settingsCancel = document.getElementById("settings-cancel");
 const settingsSave = document.getElementById("settings-save");
-const pseudoInput = document.getElementById("pseudo-input");
 const shortcuts = document.getElementById("shortcuts-wrap");
 const shortcutsToggle = document.getElementById("shortcuts-toggle");
 const shortcutsEditor = document.getElementById("shortcuts-editor");
@@ -151,10 +149,7 @@ homepageCopyUrl.addEventListener("click", async () => {
 });
 
 function openSettings() {
-  pseudoInput.value = localStorage.getItem(PSEUDO_KEY) || "";
-  showAvatarError("");
   settingsOverlay.classList.add("open");
-  pseudoInput.focus();
 }
 
 function closeSettings() {
@@ -164,7 +159,6 @@ function closeSettings() {
 
 settingsToggle.addEventListener("click", openSettings);
 settingsCancel.addEventListener("click", closeSettings);
-document.addEventListener("open-settings", openSettings);
 
 // Track where the mousedown started so a text-selection drag that begins
 // inside the modal and ends up over the backdrop (releasing there) doesn't
@@ -181,21 +175,6 @@ settingsOverlay.addEventListener("click", (e) => {
   }
 });
 
-settingsSave.addEventListener("click", () => {
-  const pseudo = pseudoInput.value.trim();
-  if (pseudo) {
-    localStorage.setItem(PSEUDO_KEY, pseudo);
-  } else {
-    localStorage.removeItem(PSEUDO_KEY);
-  }
-  renderGreeting();
-  closeSettings();
-});
+settingsSave.addEventListener("click", closeSettings);
 
-pseudoInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") settingsSave.click();
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeSettings();
-});
+onEscape(closeSettings);

@@ -1,3 +1,5 @@
+import { onClickOutside, onEscape } from "./dom-utils.js";
+
 const ENGINES = {
   google: {
     name: "Google",
@@ -61,15 +63,8 @@ engineMenu.addEventListener("click", (e) => {
   input.focus();
 });
 
-document.addEventListener("click", (e) => {
-  if (!engineMenu.contains(e.target) && !engineToggle.contains(e.target)) {
-    closeEngineMenu();
-  }
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeEngineMenu();
-});
+onClickOutside([engineMenu, engineToggle], closeEngineMenu);
+onEscape(closeEngineMenu);
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();

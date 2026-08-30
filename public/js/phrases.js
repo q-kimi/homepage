@@ -1,26 +1,18 @@
 const PHRASES = [
-  { text: "On navigue sur la toile ?", emoji: "🧭" },
-  { text: "Prêt(e) à explorer le web ?", emoji: "🚀" },
-  { text: "Une recherche à lancer ?", emoji: "🔍" },
+  { text: "On navigue sur la toile ?", emoji: "🕸️" },
+  { text: "Prêt(e) à explorer le web ?" },
   { text: "On part à l'aventure ?", emoji: "🗺️" },
-  { text: "Envie de fouiner un peu ?" },
-  { text: "À la recherche de quoi ?" },
-  { text: "On part en exploration ?", emoji: "🔦" },
+  { text: "À la recherche de quoi ?", emoji: "🔎" },
   { text: "Une question à poser à Internet ?" },
-  { text: "Le web t'attend", emoji: "🌐" },
-  { text: "On creuse un sujet ?", emoji: "⛏️" },
+  { text: "Le web vous attend !" },
+  { text: "On creuse un sujet ?" },
   { text: "Un mystère à percer ?", emoji: "🕵️" },
   { text: "Envie de découvrir quelque chose ?" },
-  { text: "On lance les recherches ?" },
-  { text: "Internet n'attend que toi" },
+  { text: "Internet n'attend que vous !" },
   { text: "Une idée derrière la tête ?", emoji: "💡" },
-  { text: "Le web est grand ouvert", emoji: "🌍" },
   { text: "Une petite recherche s'impose ?" },
-  { text: "On chasse l'info ?", emoji: "🎯" },
-  { text: "Prêt(e) à te perdre sur le web ?" },
-  { text: "Attention à l'empreinte carbone", emoji: "🌱" },
+  { text: "Attention à l'empreinte carbone", emoji: "🌻" },
   { text: "Qui accepte les cookies ?", emoji: "🍪" },
-  { text: "Besoin d'une info ?" },
 ];
 
 const PHRASE_INDEX_KEY = "homepage.phraseIndex";
@@ -44,11 +36,11 @@ function pickPhrase() {
 const heroPhrase = document.getElementById("hero-phrase");
 const phrase = pickPhrase();
 
-heroPhrase.append(phrase.text);
-
 if (phrase.emoji) {
   const emojiEl = document.createElement("span");
   emojiEl.className = "hero-phrase-emoji";
   emojiEl.textContent = phrase.emoji;
-  heroPhrase.append(" ", emojiEl);
+  heroPhrase.append(emojiEl, " ");
 }
+
+heroPhrase.append(phrase.text);
