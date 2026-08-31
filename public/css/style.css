@@ -27,7 +27,6 @@ body {
 /* Shared themed scrollbar */
 
 .themed-scroll {
-  scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
@@ -43,7 +42,6 @@ body {
 .themed-scroll::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 8px;
-  transition: background 0.15s ease;
 }
 
 .themed-scroll::-webkit-scrollbar-thumb:hover {
@@ -213,6 +211,8 @@ body {
   border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  max-height: min(320px, 60vh);
+  overflow-y: auto;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-4px);
@@ -791,25 +791,62 @@ body {
   color: var(--text);
 }
 
+.history-toggle {
+  position: fixed;
+  right: 64px;
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.history-toggle svg {
+  width: 19px;
+  height: 19px;
+}
+
+.history-toggle:hover {
+  background: var(--pill);
+  color: var(--text);
+}
+
 /* Settings modal */
 
-.settings-overlay {
+.settings-overlay,
+.history-overlay {
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: rgba(19, 19, 20, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(19, 19, 20, 0.82);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease, visibility 0.2s;
   z-index: 100;
 }
 
-.settings-overlay.open {
+/* A blurred backdrop has to keep resampling anything still animating behind
+   it every frame; pausing those animations while an overlay is open removes
+   that continuous repaint cost and keeps the modal itself responsive. */
+body:has(.settings-overlay.open, .history-overlay.open) :is(.hero-phrase-emoji, .typed-cursor, .mic-button.listening) {
+  animation-play-state: paused;
+}
+
+.settings-overlay.open,
+.history-overlay.open {
   opacity: 1;
   visibility: visible;
 }
@@ -828,8 +865,159 @@ body {
   transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.settings-overlay.open .settings-modal {
+.settings-overlay.open .settings-modal,
+.history-overlay.open .settings-modal {
   transform: scale(1) translateY(0);
+}
+
+#settings-overlay .settings-modal {
+  max-height: none;
+  overflow: visible;
+}
+
+.history-modal {
+  max-width: 420px;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+.history-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex: 0 0 auto;
+}
+
+.history-modal-header h2 {
+  margin: 0;
+}
+
+.history-search {
+  width: 100%;
+  background: var(--pill);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13.5px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  outline: none;
+  margin-bottom: 12px;
+  flex: 0 0 auto;
+  transition: border-color 0.15s ease;
+}
+
+.history-search::placeholder {
+  color: var(--text-dim);
+}
+
+.history-search:focus {
+  border-color: var(--text-dim);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 2px 4px 2px 0;
+  list-style: none;
+  max-height: 360px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.history-date-heading {
+  padding: 10px 10px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.history-date-heading:first-child {
+  padding-top: 2px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.history-item:hover {
+  background: var(--pill);
+}
+
+.history-item-time {
+  flex: 0 0 auto;
+  font-size: 11.5px;
+  color: var(--text-dim);
+}
+
+.history-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: var(--pill);
+  color: var(--text-dim);
+}
+
+.history-item-text {
+  flex: 1 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.history-item-remove {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-dim);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease, background 0.12s ease, color 0.12s ease;
+}
+
+.history-item:hover .history-item-remove {
+  opacity: 1;
+}
+
+.history-item-remove:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.history-empty {
+  margin: 0;
+  padding: 20px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.history-empty[hidden] {
+  display: none;
 }
 
 .settings-modal h2 {

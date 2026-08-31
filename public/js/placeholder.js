@@ -63,7 +63,7 @@ function startTyping() {
   typeStep();
 }
 
-function stopTyping() {
+export function stopTyping() {
   clearTimeout(typingTimer);
   typingTimer = null;
 }

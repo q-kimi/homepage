@@ -1,10 +1,9 @@
 import { form, input } from "./engines.js";
 import { syncFakePlaceholder } from "./placeholder.js";
-import { onClickOutside, readJsonArray } from "./dom-utils.js";
+import { onClickOutside } from "./dom-utils.js";
 import { loadCommands } from "./commands.js";
+import { loadHistory, rememberQuery, forgetQuery } from "./history.js";
 
-const HISTORY_KEY = "homepage.searchHistory";
-const MAX_HISTORY = 50;
 const MAX_SUGGESTIONS = 6;
 
 const list = document.getElementById("suggestions-list");
@@ -21,28 +20,6 @@ const REMOVE_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"
 const COMMAND_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none">
   <path d="M14 6L10 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
 </svg>`;
-
-function loadHistory() {
-  return readJsonArray(HISTORY_KEY, { filter: (q) => typeof q === "string" }) ?? [];
-}
-
-function saveHistory(history) {
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-}
-
-function rememberQuery(query) {
-  const trimmed = query.trim();
-  if (!trimmed) return;
-
-  const history = loadHistory().filter((q) => q.toLowerCase() !== trimmed.toLowerCase());
-  history.unshift(trimmed);
-  saveHistory(history.slice(0, MAX_HISTORY));
-}
-
-function forgetQuery(query) {
-  const history = loadHistory().filter((q) => q !== query);
-  saveHistory(history);
-}
 
 function escapeHtml(str) {
   return str.replace(/[&<>"']/g, (c) => ({
@@ -67,7 +44,7 @@ function getMatches(query) {
   const q = query.trim().toLowerCase();
   if (!q) return [];
   return loadHistory()
-    .filter((item) => item.toLowerCase() !== q && item.toLowerCase().includes(q))
+    .filter((entry) => entry.text.toLowerCase() !== q && entry.text.toLowerCase().includes(q))
     .slice(0, MAX_SUGGESTIONS);
 }
 
@@ -75,9 +52,7 @@ function getCommandMatches(query) {
   const match = query.match(/^\/(\S*)$/);
   if (!match) return [];
   const typed = match[1].toLowerCase();
-  return loadCommands()
-    .filter((c) => c.key.startsWith(typed))
-    .slice(0, MAX_SUGGESTIONS);
+  return loadCommands().filter((c) => c.key.startsWith(typed));
 }
 
 let matches = [];
@@ -113,7 +88,7 @@ function selectSuggestion(index) {
     return;
   }
 
-  input.value = matches[index];
+  input.value = matches[index].text;
   syncFakePlaceholder();
   closeSuggestions();
   form.requestSubmit();
@@ -174,14 +149,14 @@ function renderSuggestions(query) {
     return;
   }
 
-  matches.forEach((text, i) => {
+  matches.forEach((entry, i) => {
     const li = document.createElement("li");
     li.className = "suggestion-item";
     li.id = `suggestion-${i}`;
     li.setAttribute("role", "option");
     li.innerHTML = `
       <span class="suggestion-icon">${HISTORY_ICON}</span>
-      <span class="suggestion-text">${highlightMatch(text, query)}</span>
+      <span class="suggestion-text">${highlightMatch(entry.text, query)}</span>
       <button type="button" class="suggestion-remove" aria-label="Supprimer cette suggestion" tabindex="-1">${REMOVE_ICON}</button>
     `;
 
@@ -194,7 +169,7 @@ function renderSuggestions(query) {
     li.querySelector(".suggestion-remove").addEventListener("mousedown", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      forgetQuery(text);
+      forgetQuery(entry.text);
       renderSuggestions(input.value);
     });
 

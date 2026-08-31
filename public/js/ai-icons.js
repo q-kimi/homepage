@@ -34,6 +34,12 @@ export const COPILOT_ICON = `<svg width="18" height="18" viewBox="0 0 24 24" xml
   <path d="M9 22h8.749c2.5 0 4-3.332 5-6.663 1.184-3.948 2.734-9.227-1.75-9.227H17.22c-1.129 0-2.12.754-2.43 1.848a1149.2 1149.2 0 01-2.713 9.437c-.46 1.564-.842 2.907-1.43 3.743A1.97 1.97 0 019 22" fill="url(#ai-copilot-5)" transform="translate(0 1)"/>
 </svg>`;
 
+export const KIMI_ICON = `<img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/kimi-ai.svg" width="18" height="18" alt="">`;
+
+export const PERPLEXITY_ICON = `<svg width="18" height="18" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="m95.6 0 145.8 134.3V.3h28.4v134.6L416.2 0v153.2h60.1v220.9h-59.9v136.4L269.8 381.6v130.3h-28.4V383.7L95.8 512V374.1H35.6V153.2h60zM220 181.2H64V346h31.7v-52zm-95.8 125.3v143l117.2-103.3V200zm146.4 38.3v-145l117.3 106.5V374h.2v74zm145.8 1.2H448V181.2H293.2l123.3 111.7V346zm-28.6-192.8V64.5l-96.2 88.7zm-167.6 0H124V64.5z" style="fill-rule:evenodd;clip-rule:evenodd;fill:#20b8cd"/>
+</svg>`;
+
 export const HUGGINGCHAT_ICON = `<svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <path d="M2.25 11.535c0-3.407 1.847-6.554 4.844-8.258a9.822 9.822 0 019.687 0c2.997 1.704 4.844 4.851 4.844 8.258 0 5.266-4.337 9.535-9.687 9.535S2.25 16.8 2.25 11.535z" fill="#FF9D0B"/>
   <path d="M11.938 20.086c4.797 0 8.687-3.829 8.687-8.551 0-4.722-3.89-8.55-8.687-8.55-4.798 0-8.688 3.828-8.688 8.55 0 4.722 3.89 8.55 8.688 8.55z" fill="#FFD21E"/>

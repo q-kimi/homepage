@@ -8,3 +8,4 @@ import "./ai-picker.js";
 import "./voice.js";
 import "./backup.js";
 import "./commands-editor.js";
+import "./history-panel.js";

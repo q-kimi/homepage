@@ -1,4 +1,5 @@
 import { onEscape } from "./dom-utils.js";
+import { stopTyping, syncFakePlaceholder } from "./placeholder.js";
 
 const SHORTCUTS_HIDDEN_KEY = "homepage.shortcuts.hidden";
 const COLLAPSE_DURATION = 300;
@@ -179,11 +180,13 @@ homepageCopyUrl.addEventListener("click", async () => {
 
 function openSettings() {
   settingsOverlay.classList.add("open");
+  stopTyping();
 }
 
 function closeSettings() {
   settingsOverlay.classList.remove("open");
   if (!homepageInstructions.hidden) collapse(homepageInstructions);
+  syncFakePlaceholder();
 }
 
 settingsToggle.addEventListener("click", openSettings);

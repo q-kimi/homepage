@@ -1,5 +1,5 @@
 import { onClickOutside, onEscape } from "./dom-utils.js";
-import { CLAUDE_ICON, CHATGPT_ICON, GROK_ICON, MISTRAL_ICON, HUGGINGCHAT_ICON } from "./ai-icons.js";
+import { CLAUDE_ICON, CHATGPT_ICON, GROK_ICON, MISTRAL_ICON, HUGGINGCHAT_ICON, PERPLEXITY_ICON } from "./ai-icons.js";
 import { loadCommands } from "./commands.js";
 
 const GOOGLE_ICON = `<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/960px-Google_Favicon_2025.svg.png" width="18" height="18" alt="">`;
@@ -33,6 +33,7 @@ const ENGINE_GROUPS = [
       claude: { name: "Claude", url: "https://claude.ai/new?q=", icon: CLAUDE_ICON },
       mistral: { name: "Mistral AI", url: "https://chat.mistral.ai/chat?q=", icon: MISTRAL_ICON },
       huggingchat: { name: "HuggingChat", url: "https://huggingface.co/chat/?q=", icon: HUGGINGCHAT_ICON },
+      perplexity: { name: "Perplexity", url: "https://www.perplexity.ai/search/?q=", icon: PERPLEXITY_ICON },
     },
   },
 ];

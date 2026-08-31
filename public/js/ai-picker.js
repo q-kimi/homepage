@@ -6,6 +6,8 @@ import {
   GROK_ICON,
   COPILOT_ICON,
   HUGGINGCHAT_ICON,
+  KIMI_ICON,
+  PERPLEXITY_ICON,
 } from "./ai-icons.js";
 
 const AI_KEY = "homepage.aiProvider";
@@ -19,6 +21,8 @@ const AI_OPTIONS = {
   gemini: { name: "Gemini", url: "https://gemini.google.com/app", icon: GEMINI_ICON },
   mistral: { name: "Mistral AI", url: "https://chat.mistral.ai/chat", icon: MISTRAL_ICON },
   huggingchat: { name: "HuggingChat", url: "https://huggingface.co/chat/", icon: HUGGINGCHAT_ICON },
+  kimi: { name: "Kimi", url: "https://www.kimi.com/", icon: KIMI_ICON },
+  perplexity: { name: "Perplexity", url: "https://www.perplexity.ai/", icon: PERPLEXITY_ICON },
 };
 
 const aiButton = document.getElementById("ai-button");
