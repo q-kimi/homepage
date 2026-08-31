@@ -24,7 +24,7 @@ if (SpeechRecognitionClass) {
   // Brave has no user-facing setting to enable this: it blocks the
   // underlying (Google-run) speech recognition service by design, with no
   // toggle exposed anywhere in its settings. See brave/brave-browser#10126
-  // and #18569 on GitHub — a years-old, still-unresolved limitation.
+  // and #18569 on GitHub: a years-old, still-unresolved limitation.
   const BRAVE_BLOCKED_MESSAGE =
     "Brave ne supporte pas la dictée vocale : il bloque le service de reconnaissance vocale sans réglage pour l'activer. Utilise Chrome ou Edge pour cette fonctionnalité.";
 
@@ -103,7 +103,7 @@ if (SpeechRecognitionClass) {
     micButton.classList.remove("listening");
 
     // Brave silently starts then immediately ends the session (no "result", no
-    // "error" event at all) when it blocks the underlying speech service —
+    // "error" event at all) when it blocks the underlying speech service;
     // this is the only place that case is ever observable.
     if (!gotResultOrError) {
       if (navigator.brave) {
@@ -145,7 +145,7 @@ if (SpeechRecognitionClass) {
     }
 
     // Starting recognition here is what triggers the browser's mic
-    // permission prompt — pointless on Brave, since the request will fail
+    // permission prompt, which is pointless on Brave since the request will fail
     // regardless once past that point. Skip it entirely until a session has
     // actually proven it works.
     if (navigator.brave && localStorage.getItem(BRAVE_VOICE_ENABLED_KEY) !== "1") {

@@ -502,7 +502,7 @@ body {
 }
 
 .shortcuts-wrap.paginated .shortcuts-viewport {
-  width: 564px; /* 7 tiles (72px) + 6 gaps (10px) — keep in sync with PAGE_SIZE in shortcuts.js */
+  width: 564px; /* 7 tiles (72px) + 6 gaps (10px); keep in sync with PAGE_SIZE in shortcuts.js */
   padding: 4px 0;
 }
 
