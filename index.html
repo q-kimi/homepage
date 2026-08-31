@@ -258,6 +258,32 @@
   </div>
 </div>
 
-<script type="module" src="/js/main.js"></script>
+<script type="module" src="/js/main.js" id="main-script"></script>
+<script>
+  (function () {
+    var mainScript = document.getElementById("main-script");
+    var retried = false;
+
+    function retryScript() {
+      if (retried) return;
+      retried = true;
+      var fresh = document.createElement("script");
+      fresh.type = "module";
+      fresh.src = mainScript.src;
+      document.body.appendChild(fresh);
+    }
+
+    mainScript.addEventListener("error", retryScript);
+
+    window.addEventListener("load", function () {
+      setTimeout(function () {
+        var heroPhrase = document.getElementById("hero-phrase");
+        if (heroPhrase && !heroPhrase.textContent.trim()) {
+          retryScript();
+        }
+      }, 1500);
+    });
+  })();
+</script>
 </body>
 </html>
