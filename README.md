@@ -1,73 +1,73 @@
-# Homepage
+<p align="center">
+  <img src="public/logo.svg" width="72" alt="">
+</p>
 
-Page d'accueil personnelle (nouvel onglet) minimaliste, inspirée de Google : barre de recherche multi-moteurs, raccourcis personnalisables, dictée vocale et accès rapide à plusieurs assistants IA.
+<h1 align="center">Homepage</h1>
+<p align="center"><i>Un nouvel onglet qui m'appartient.</i></p>
 
-HTML/CSS/JS pur. Aucun framework, aucun backend, aucune donnée envoyée à un serveur.
+<p align="center">
+  <a href="https://homepage.qkimi.fr/"><strong>homepage.qkimi.fr →</strong></a>
+</p>
 
-**Live :** [homepage.qkimi.fr](https://homepage.qkimi.fr/)
+---
 
-## Fonctionnalités
+Remplace la page "Nouvel onglet" du navigateur par une page de recherche minimaliste, pensée pour un usage perso : recherche multi-moteurs, raccourcis, dictée vocale, accès rapide à une IA. HTML/CSS/JS pur, sans framework, sans backend. Rien n'est envoyé à un serveur, tout vit dans le `localStorage` du navigateur.
 
-**Recherche**
-- Multi-moteurs : Google, Bing, Brave, choix mémorisé.
-- Placeholder animé façon machine à écrire.
-- Suggestions basées sur l'historique de recherche.
+## Ce qu'elle fait
 
-**Personnalisation**
-- Phrase d'accueil aléatoire, renouvelée toutes les 30 minutes.
-- Raccourcis vers des sites fréquents : ajout, édition, suppression, réorganisation par glisser-déposer, pagination au-delà de 7.
-- Accès rapide à un assistant IA au choix : Claude, ChatGPT, Grok, Copilot, Gemini, Mistral AI, HuggingChat.
+| | |
+|---|---|
+| **Recherche** | Google, Bing ou Brave au choix, mémorisé. Suggestions tirées de l'historique, placeholder animé façon machine à écrire. |
+| **Raccourcis** | Ajout, édition, suppression, glisser-déposer pour réordonner. Pagination automatique passé 7 raccourcis. |
+| **IA** | Accès direct à Claude, ChatGPT, Grok, Copilot, Gemini, Mistral AI ou HuggingChat, au choix. |
+| **Voix** | Dictée vocale via la Web Speech API, quand le navigateur la supporte. |
+| **Accueil** | Une phrase différente à chaque visite, renouvelée toutes les 30 minutes, plutôt qu'un simple "Bonjour". |
 
-**Autres**
-- Dictée vocale via la Web Speech API, quand le navigateur la supporte.
-- Tout est stocké dans le `localStorage` du navigateur : aucune donnée n'est envoyée à un serveur.
-
-## Démarrage
+## Lancer en local
 
 ```bash
 npm install
 npm run dev
 ```
 
-Le serveur de dev (Vite, rechargement à chaud) tourne sur `http://localhost:5173` par défaut. Il n'y a pas d'étape de build : le site est du HTML/CSS/JS pur, servi tel quel en production.
+Serveur Vite avec rechargement à chaud sur `http://localhost:5173`. Pas d'étape de build : le site est servi tel quel, en dev comme en prod.
 
 ## Structure
 
 ```
 homepage/
-├── index.html            Structure de la page
-├── vite.config.js        Configuration Vite (dev uniquement)
-├── Dockerfile             Image Nginx qui sert les fichiers tels quels
-├── nginx.conf              Config Nginx (gzip, cache)
-├── .dockerignore
+├── index.html            structure de la page
+├── vite.config.js        config Vite (dev uniquement)
+├── Dockerfile             image Nginx qui sert les fichiers tels quels
+├── nginx.conf              config Nginx (gzip, cache)
 └── public/
     ├── favicon.svg
-    ├── css/
-    │   └── style.css      Styles
+    ├── logo.svg
+    ├── css/style.css
     └── js/
-        ├── main.js         Point d'entrée, importe les modules dans l'ordre
-        ├── dom-utils.js     Helpers partagés (clic extérieur, touche Échap, lecture localStorage)
-        ├── engines.js        Sélecteur de moteur de recherche, soumission du formulaire
-        ├── autocomplete.js    Suggestions basées sur l'historique de recherche
-        ├── placeholder.js      Effet machine à écrire du placeholder
-        ├── phrases.js            Phrase d'accueil aléatoire (rotation toutes les 30 min)
-        ├── shortcuts.js           Raccourcis : ajout, édition, suppression, glisser-déposer, pagination
-        ├── ai-picker.js            Sélecteur d'assistant IA
-        ├── settings.js              Modale de paramètres
-        └── voice.js                  Dictée vocale (Web Speech API)
+        ├── main.js         point d'entrée
+        ├── dom-utils.js     helpers partagés
+        ├── engines.js        moteur de recherche
+        ├── autocomplete.js    suggestions
+        ├── placeholder.js      machine à écrire
+        ├── phrases.js            phrase d'accueil
+        ├── shortcuts.js           raccourcis
+        ├── ai-picker.js            sélecteur d'IA
+        ├── settings.js              paramètres
+        └── voice.js                  dictée vocale
 ```
 
 ## Déploiement
 
-Le `Dockerfile` copie `index.html` et `public/` directement dans l'image Nginx, sans build, sans Node dans l'image finale. C'est volontaire : un build Vite renommerait `main.js`/`style.css` avec un hash à chaque déploiement, et un onglet ouvert au moment du redéploiement se retrouverait à demander les anciens fichiers hashés, qui n'existent plus, d'où une page sans style. En servant des noms de fichiers stables, ce risque disparaît.
+Le `Dockerfile` copie `index.html` et `public/` directement dans l'image Nginx : pas de build, pas de Node dans l'image finale. C'est volontaire, un build Vite renommerait les fichiers avec un hash à chaque déploiement, et un onglet resté ouvert pendant un redéploiement finirait par demander d'anciens fichiers qui n'existent plus. Des noms stables évitent le problème.
 
 ```bash
 docker build -t homepage .
 docker run -p 8080:80 homepage
 ```
 
-Sur **Dokploy** : créer une application de type *Dockerfile* pointant sur ce repo, port interne **80**, aucune autre configuration nécessaire.
+Sur Dokploy : application de type *Dockerfile*, port interne `80`, rien d'autre à configurer.
 
 ## Licence
 
-Distribué sous licence [MIT](LICENSE).
+[MIT](LICENSE)
