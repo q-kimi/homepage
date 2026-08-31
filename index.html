@@ -10,15 +10,28 @@
 <script>
   (function () {
     var link = document.getElementById("main-stylesheet");
-    var retried = false;
-    link.addEventListener("error", function () {
-      if (retried) return;
-      retried = true;
+    var baseHref = link.href;
+    var attempts = 0;
+    var maxAttempts = 4;
+
+    function retryCss() {
+      if (attempts >= maxAttempts) {
+        console.error("[homepage] CSS failed to load after " + attempts + " attempts.");
+        return;
+      }
+      attempts += 1;
+      console.warn("[homepage] CSS load failed, retry " + attempts + "/" + maxAttempts);
       var fresh = document.createElement("link");
       fresh.rel = "stylesheet";
-      fresh.href = link.href;
+      fresh.href = baseHref.split("?")[0] + "?retry=" + attempts;
+      fresh.addEventListener("error", retryCss);
+      fresh.addEventListener("load", function () {
+        console.log("[homepage] CSS recovered on retry " + attempts);
+      });
       document.head.appendChild(fresh);
-    });
+    }
+
+    link.addEventListener("error", retryCss);
   })();
 </script>
 </head>
@@ -262,26 +275,41 @@
 <script>
   (function () {
     var mainScript = document.getElementById("main-script");
-    var retried = false;
+    var baseSrc = mainScript.src.split("?")[0];
+    var attempts = 0;
+    var maxAttempts = 4;
+    var delays = [800, 1500, 2500, 4000];
 
-    function retryScript() {
-      if (retried) return;
-      retried = true;
-      var fresh = document.createElement("script");
-      fresh.type = "module";
-      fresh.src = mainScript.src;
-      document.body.appendChild(fresh);
+    function jsIsWorking() {
+      var heroPhrase = document.getElementById("hero-phrase");
+      return !!(heroPhrase && heroPhrase.textContent.trim());
     }
 
-    mainScript.addEventListener("error", retryScript);
+    function scheduleRetry() {
+      if (jsIsWorking()) {
+        if (attempts > 0) console.log("[homepage] main.js recovered on retry " + attempts);
+        return;
+      }
+      if (attempts >= maxAttempts) {
+        console.error("[homepage] main.js failed to load after " + attempts + " attempts.");
+        return;
+      }
+      var delay = delays[attempts] || 4000;
+      attempts += 1;
+      console.warn("[homepage] main.js not running, retry " + attempts + "/" + maxAttempts + " in " + delay + "ms");
+      var fresh = document.createElement("script");
+      fresh.type = "module";
+      fresh.src = baseSrc + "?retry=" + attempts;
+      document.body.appendChild(fresh);
+      setTimeout(scheduleRetry, delay);
+    }
+
+    mainScript.addEventListener("error", function () {
+      setTimeout(scheduleRetry, 300);
+    });
 
     window.addEventListener("load", function () {
-      setTimeout(function () {
-        var heroPhrase = document.getElementById("hero-phrase");
-        if (heroPhrase && !heroPhrase.textContent.trim()) {
-          retryScript();
-        }
-      }, 1500);
+      setTimeout(scheduleRetry, 1000);
     });
   })();
 </script>
