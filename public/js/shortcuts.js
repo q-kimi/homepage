@@ -42,9 +42,14 @@ function resizeIconFile(file) {
     const objectUrl = URL.createObjectURL(file);
 
     img.onload = () => {
-      const size = Math.min(img.width, img.height);
-      const sx = (img.width - size) / 2;
-      const sy = (img.height - size) / 2;
+      // SVGs with no explicit width/height/viewBox can report 0 for both
+      // (naturalWidth/naturalHeight), which would otherwise crop to nothing;
+      // fall back to drawing them straight into the target square instead.
+      const width = img.naturalWidth || ICON_DIMENSION;
+      const height = img.naturalHeight || ICON_DIMENSION;
+      const size = Math.min(width, height);
+      const sx = (width - size) / 2;
+      const sy = (height - size) / 2;
 
       const canvas = document.createElement("canvas");
       canvas.width = ICON_DIMENSION;

@@ -17,8 +17,8 @@ Remplace la page "Nouvel onglet" du navigateur par une page de recherche minimal
 
 | | |
 |---|---|
-| **Recherche** | Google, Bing ou Brave au choix, mémorisé. Suggestions tirées de l'historique, placeholder animé façon machine à écrire. |
-| **Raccourcis** | Ajout, édition, suppression, glisser-déposer pour réordonner. Pagination automatique passé 7 raccourcis. |
+| **Recherche** | Google, Bing, Brave, ChatGPT, Grok ou HuggingChat au choix, mémorisé. Suggestions tirées de l'historique, placeholder animé façon machine à écrire. |
+| **Raccourcis** | Ajout, édition, suppression, icônes personnalisées, glisser-déposer pour réordonner. Pagination automatique passé 7 raccourcis. |
 | **IA** | Accès direct à Claude, ChatGPT, Grok, Copilot, Gemini, Mistral AI ou HuggingChat, au choix. |
 | **Voix** | Dictée vocale via la Web Speech API, quand le navigateur la supporte. |
 | **Accueil** | Une phrase différente à chaque visite, renouvelée toutes les 30 minutes, plutôt qu'un simple "Bonjour". |
@@ -52,6 +52,7 @@ homepage/
         ├── placeholder.js      machine à écrire
         ├── phrases.js            phrase d'accueil
         ├── shortcuts.js           raccourcis
+        ├── ai-icons.js              icônes des assistants IA
         ├── ai-picker.js            sélecteur d'IA
         ├── settings.js              paramètres
         └── voice.js                  dictée vocale
