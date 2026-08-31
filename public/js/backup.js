@@ -4,6 +4,7 @@ const BACKUP_KEYS = [
   "homepage.aiProvider",
   "homepage.shortcuts.hidden",
   "homepage.searchHistory",
+  "homepage.commands",
 ];
 
 const exportBtn = document.getElementById("backup-export-btn");

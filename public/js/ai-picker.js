@@ -9,7 +9,7 @@ import {
 } from "./ai-icons.js";
 
 const AI_KEY = "homepage.aiProvider";
-const DEFAULT_AI = "claude";
+const DEFAULT_AI = "chatgpt";
 
 const AI_OPTIONS = {
   claude: { name: "Claude", url: "https://claude.ai/new", icon: CLAUDE_ICON },

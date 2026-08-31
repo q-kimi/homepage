@@ -85,7 +85,10 @@
             </svg>
           </button>
 
-          <a class="ai-button" id="ai-button" href="https://claude.ai/new" target="_blank" rel="noopener" aria-label="Ouvrir Claude"></a>
+          <span class="ai-button-wrap">
+            <a class="ai-button" id="ai-button" href="https://chatgpt.com/" target="_blank" rel="noopener" aria-label="Ouvrir ChatGPT"></a>
+            <button type="button" class="command-hint-button" id="command-hint-button" aria-label="Voir les commandes">/</button>
+          </span>
         </div>
 
         <div class="toolbar-right">
@@ -100,7 +103,7 @@
         </div>
       </div>
 
-      <ul class="engine-menu" id="engine-menu" role="listbox"></ul>
+      <ul class="engine-menu themed-scroll" id="engine-menu" role="listbox"></ul>
     </form>
 
     <div class="shortcuts-wrap" id="shortcuts-wrap">
@@ -128,7 +131,7 @@
 </button>
 
 <div class="settings-overlay" id="settings-overlay">
-  <div class="settings-modal">
+  <div class="settings-modal themed-scroll">
     <h2>Paramètres</h2>
 
     <div class="settings-section">
@@ -146,7 +149,7 @@
         <div class="settings-section-header settings-section-header-end">
           <button type="button" class="btn-link" id="shortcuts-add-btn">+ Ajouter</button>
         </div>
-        <ul class="shortcuts-edit-list" id="shortcuts-edit-list"></ul>
+        <ul class="shortcuts-edit-list themed-scroll" id="shortcuts-edit-list"></ul>
         <input type="file" id="shortcut-icon-input" accept="image/*,.svg" hidden>
       </div>
     </div>
@@ -180,6 +183,14 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-header">
+        <p class="settings-section-title">Commandes /</p>
+        <button type="button" class="btn-link" id="commands-add-btn">+ Ajouter</button>
+      </div>
+      <ul class="commands-edit-list themed-scroll" id="commands-edit-list"></ul>
     </div>
 
     <div class="settings-section">

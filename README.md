@@ -57,7 +57,9 @@ homepage/
         ├── ai-picker.js            sélecteur d'IA
         ├── settings.js              paramètres
         ├── voice.js                  dictée vocale
-        └── backup.js                  export/import de la config
+        ├── backup.js                  export/import de la config
+        ├── commands.js                 commandes / (données)
+        └── commands-editor.js           commandes / (éditeur)
 ```
 
 ## Déploiement

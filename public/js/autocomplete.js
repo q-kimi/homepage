@@ -1,6 +1,7 @@
 import { form, input } from "./engines.js";
 import { syncFakePlaceholder } from "./placeholder.js";
 import { onClickOutside, readJsonArray } from "./dom-utils.js";
+import { loadCommands } from "./commands.js";
 
 const HISTORY_KEY = "homepage.searchHistory";
 const MAX_HISTORY = 50;
@@ -15,6 +16,10 @@ const HISTORY_ICON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none
 
 const REMOVE_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none">
   <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</svg>`;
+
+const COMMAND_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+  <path d="M14 6L10 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
 </svg>`;
 
 function loadHistory() {
@@ -66,7 +71,17 @@ function getMatches(query) {
     .slice(0, MAX_SUGGESTIONS);
 }
 
+function getCommandMatches(query) {
+  const match = query.match(/^\/(\S*)$/);
+  if (!match) return [];
+  const typed = match[1].toLowerCase();
+  return loadCommands()
+    .filter((c) => c.key.startsWith(typed))
+    .slice(0, MAX_SUGGESTIONS);
+}
+
 let matches = [];
+let suggestionMode = "history";
 let activeIndex = -1;
 
 function closeSuggestions() {
@@ -89,14 +104,67 @@ function setActive(index) {
   }
 }
 
-function selectSuggestion(query) {
-  input.value = query;
+function selectSuggestion(index) {
+  if (suggestionMode === "command") {
+    input.value = `/${matches[index].key} `;
+    syncFakePlaceholder();
+    closeSuggestions();
+    input.focus();
+    return;
+  }
+
+  input.value = matches[index];
   syncFakePlaceholder();
   closeSuggestions();
   form.requestSubmit();
 }
 
+function renderCommandSuggestions(entries) {
+  suggestionMode = "command";
+  matches = entries;
+  activeIndex = -1;
+  list.innerHTML = "";
+
+  if (entries.length === 0) {
+    closeSuggestions();
+    return;
+  }
+
+  const heading = document.createElement("li");
+  heading.className = "suggestions-list-heading";
+  heading.textContent = "Commande link";
+  list.appendChild(heading);
+
+  entries.forEach((command, i) => {
+    const li = document.createElement("li");
+    li.className = "suggestion-item";
+    li.id = `suggestion-${i}`;
+    li.setAttribute("role", "option");
+    li.innerHTML = `
+      <span class="suggestion-icon">${COMMAND_ICON}</span>
+      <span class="suggestion-text"><code>/${command.key}</code>${command.name}</span>
+    `;
+
+    li.addEventListener("mouseenter", () => setActive(i));
+    li.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      selectSuggestion(i);
+    });
+
+    list.appendChild(li);
+  });
+
+  list.classList.add("open");
+  input.setAttribute("aria-expanded", "true");
+}
+
 function renderSuggestions(query) {
+  if (query.trim().startsWith("/")) {
+    renderCommandSuggestions(getCommandMatches(query));
+    return;
+  }
+
+  suggestionMode = "history";
   matches = getMatches(query);
   activeIndex = -1;
   list.innerHTML = "";
@@ -121,7 +189,7 @@ function renderSuggestions(query) {
     li.addEventListener("mousedown", (e) => {
       if (e.target.closest(".suggestion-remove")) return;
       e.preventDefault();
-      selectSuggestion(text);
+      selectSuggestion(i);
     });
     li.querySelector(".suggestion-remove").addEventListener("mousedown", (e) => {
       e.preventDefault();
@@ -157,14 +225,23 @@ input.addEventListener("keydown", (e) => {
   } else if (e.key === "Enter") {
     if (activeIndex >= 0) {
       e.preventDefault();
-      selectSuggestion(matches[activeIndex]);
+      selectSuggestion(activeIndex);
     }
   } else if (e.key === "Escape") {
     closeSuggestions();
   }
 });
 
-onClickOutside([list, input], closeSuggestions);
+const commandHintButton = document.getElementById("command-hint-button");
+
+commandHintButton.addEventListener("click", () => {
+  input.value = "/";
+  syncFakePlaceholder();
+  input.focus();
+  renderSuggestions(input.value);
+});
+
+onClickOutside([list, input, commandHintButton], closeSuggestions);
 
 form.addEventListener("submit", () => {
   rememberQuery(input.value);

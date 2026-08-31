@@ -1,5 +1,6 @@
 import { onClickOutside, onEscape } from "./dom-utils.js";
 import { CLAUDE_ICON, CHATGPT_ICON, GROK_ICON, MISTRAL_ICON, HUGGINGCHAT_ICON } from "./ai-icons.js";
+import { loadCommands } from "./commands.js";
 
 const GOOGLE_ICON = `<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/960px-Google_Favicon_2025.svg.png" width="18" height="18" alt="">`;
 
@@ -122,11 +123,27 @@ engineMenu.addEventListener("click", (e) => {
 onClickOutside([engineMenu, engineToggle], closeEngineMenu);
 onEscape(closeEngineMenu);
 
+function resolveCommand(query) {
+  if (!query.startsWith("/")) return null;
+
+  const match = query.match(/^\/(\S+)\s*(.*)$/);
+  if (!match) return null;
+
+  const key = match[1].toLowerCase();
+  const command = loadCommands().find((c) => c.key === key);
+  if (!command) return null;
+
+  const rest = match[2].trim();
+  return rest ? command.url + encodeURIComponent(rest) : command.home;
+}
+
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const query = input.value.trim();
   if (!query) return;
-  window.location.href = ENGINES[currentEngine].url + encodeURIComponent(query);
+
+  const commandUrl = resolveCommand(query);
+  window.location.href = commandUrl || ENGINES[currentEngine].url + encodeURIComponent(query);
 });
 
 renderEngineMenu();
