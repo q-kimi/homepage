@@ -916,8 +916,12 @@ body {
   cursor: grabbing;
 }
 
-.shortcut-edit-icon {
+.shortcut-edit-icon-wrap {
+  position: relative;
   flex: 0 0 auto;
+}
+
+.shortcut-edit-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -925,12 +929,52 @@ body {
   height: 20px;
   border-radius: 5px;
   color: var(--text-dim);
+  background: none;
+  border: 1px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.shortcut-edit-icon:hover {
+  border-color: var(--border);
 }
 
 .shortcut-edit-icon img {
   width: 100%;
   height: 100%;
   border-radius: 5px;
+}
+
+.shortcut-edit-icon-reset {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pill);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 0;
+}
+
+.shortcut-edit-icon-reset svg {
+  width: 8px;
+  height: 8px;
+}
+
+.shortcut-edit-icon-reset:hover {
+  background: var(--pill-hover);
+  color: var(--text);
+}
+
+.shortcut-edit-icon-reset[hidden] {
+  display: none;
 }
 
 .shortcut-edit-name,

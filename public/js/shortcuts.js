@@ -28,9 +28,41 @@ const prevBtn = document.getElementById("shortcuts-prev");
 const nextBtn = document.getElementById("shortcuts-next");
 const editList = document.getElementById("shortcuts-edit-list");
 const addBtn = document.getElementById("shortcuts-add-btn");
+const iconInput = document.getElementById("shortcut-icon-input");
 
 const PAGE_SIZE = 7;
+const ICON_MAX_SOURCE_SIZE = 15 * 1024 * 1024;
+const ICON_DIMENSION = 64;
 let page = 0;
+let iconEditIndex = null;
+
+function resizeIconFile(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+      const size = Math.min(img.width, img.height);
+      const sx = (img.width - size) / 2;
+      const sy = (img.height - size) / 2;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = ICON_DIMENSION;
+      canvas.height = ICON_DIMENSION;
+      canvas
+        .getContext("2d")
+        .drawImage(img, sx, sy, size, size, 0, 0, ICON_DIMENSION, ICON_DIMENSION);
+
+      URL.revokeObjectURL(objectUrl);
+      resolve(canvas.toDataURL("image/png"));
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("image-decode-failed"));
+    };
+    img.src = objectUrl;
+  });
+}
 
 function loadShortcuts() {
   return readJsonArray(SHORTCUTS_KEY) ?? DEFAULT_SHORTCUTS.slice();
@@ -94,8 +126,15 @@ function faviconUrl(url) {
   return `https://www.google.com/s2/favicons?sz=64&domain=${hostname}`;
 }
 
-function renderIcon(container, url) {
+function renderIcon(container, url, customIcon) {
   container.replaceChildren();
+  if (customIcon) {
+    const img = document.createElement("img");
+    img.src = customIcon;
+    img.alt = "";
+    container.append(img);
+    return;
+  }
   const svgIcon = SVG_ICON_OVERRIDES[hostnameOf(url)];
   if (svgIcon) {
     container.innerHTML = svgIcon;
@@ -114,9 +153,9 @@ function renderShortcutsRow() {
   shortcutsRow.replaceChildren();
 
   let visibleCount = 0;
-  for (const { name, url } of list) {
+  for (const { name, url, icon } of list) {
     const safeUrl = normalizeUrl(url);
-    if (!name?.trim() || !safeUrl) continue;
+    if (!safeUrl) continue;
 
     const a = document.createElement("a");
     a.className = "shortcut-tile";
@@ -126,12 +165,23 @@ function renderShortcutsRow() {
 
     const iconWrap = document.createElement("span");
     iconWrap.className = "shortcut-tile-icon";
-    renderIcon(iconWrap, url);
+    renderIcon(iconWrap, url, icon);
     if (iconWrap.hasChildNodes()) a.append(iconWrap);
 
-    const span = document.createElement("span");
-    span.textContent = name;
-    a.append(span);
+    const trimmedName = name?.trim();
+    if (trimmedName) {
+      const span = document.createElement("span");
+      span.textContent = trimmedName;
+      a.append(span);
+    } else {
+      // No name set: show the icon alone, but still give it an accessible
+      // label so it isn't just a blank link for screen readers.
+      const label = hostnameOf(url);
+      if (label) {
+        a.setAttribute("aria-label", label);
+        a.title = label;
+      }
+    }
 
     shortcutsRow.append(a);
     visibleCount += 1;
@@ -205,9 +255,40 @@ function renderEditor() {
     grip.setAttribute("aria-hidden", "true");
     grip.innerHTML = GRIP_ICON;
 
-    const icon = document.createElement("span");
+    const iconWrap = document.createElement("span");
+    iconWrap.className = "shortcut-edit-icon-wrap";
+
+    const icon = document.createElement("button");
+    icon.type = "button";
     icon.className = "shortcut-edit-icon";
-    renderIcon(icon, item.url);
+    icon.title = "Changer l'icône";
+    icon.setAttribute("aria-label", "Changer l'icône de ce raccourci");
+    renderIcon(icon, item.url, item.icon);
+
+    icon.addEventListener("click", () => {
+      iconEditIndex = index;
+      iconInput.click();
+    });
+
+    const iconReset = document.createElement("button");
+    iconReset.type = "button";
+    iconReset.className = "shortcut-edit-icon-reset";
+    iconReset.title = "Revenir à l'icône automatique";
+    iconReset.setAttribute("aria-label", "Revenir à l'icône automatique");
+    iconReset.innerHTML = REMOVE_ICON;
+    iconReset.hidden = !item.icon;
+
+    iconReset.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const current = loadShortcuts();
+      delete current[index].icon;
+      saveShortcuts(current);
+      renderIcon(icon, urlInput.value);
+      iconReset.hidden = true;
+      renderShortcutsRow();
+    });
+
+    iconWrap.append(icon, iconReset);
 
     const nameInput = document.createElement("input");
     nameInput.type = "text";
@@ -222,7 +303,7 @@ function renderEditor() {
     removeBtn.setAttribute("aria-label", "Supprimer ce raccourci");
     removeBtn.innerHTML = REMOVE_ICON;
 
-    row.append(grip, icon, nameInput, removeBtn);
+    row.append(grip, iconWrap, nameInput, removeBtn);
 
     const urlInput = document.createElement("input");
     urlInput.type = "text";
@@ -235,9 +316,9 @@ function renderEditor() {
 
     function commit() {
       const current = loadShortcuts();
-      current[index] = { name: nameInput.value, url: urlInput.value };
+      current[index] = { ...current[index], name: nameInput.value, url: urlInput.value };
       saveShortcuts(current);
-      renderIcon(icon, urlInput.value);
+      renderIcon(icon, urlInput.value, current[index].icon);
       renderShortcutsRow();
     }
 
@@ -300,6 +381,29 @@ addBtn.addEventListener("click", () => {
   saveShortcuts(current);
   renderEditor();
   editList.querySelector(".shortcut-edit-item:last-child .shortcut-edit-name")?.focus();
+});
+
+iconInput.addEventListener("change", async () => {
+  const file = iconInput.files[0];
+  const index = iconEditIndex;
+  iconInput.value = "";
+  iconEditIndex = null;
+  if (!file || index === null) return;
+
+  if (!file.type.startsWith("image/")) return;
+  if (file.size > ICON_MAX_SOURCE_SIZE) return;
+
+  try {
+    const dataUrl = await resizeIconFile(file);
+    const current = loadShortcuts();
+    if (!current[index]) return;
+    current[index].icon = dataUrl;
+    saveShortcuts(current);
+    renderShortcutsRow();
+    renderEditor();
+  } catch {
+    // Ignore: the icon just stays whatever it was before the failed upload.
+  }
 });
 
 renderShortcutsRow();
