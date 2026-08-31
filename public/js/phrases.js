@@ -50,7 +50,6 @@ const PHRASES = [
   { text: "Qui accepte les cookies ?", emoji: "🍪" },
   { text: "Moins de clics, plus de résultats." },
   { text: "Chaque jour est une nouvelle opportunité de créer." },
-  { text: "Fais de cet endroit ton moteur quotidien :)" },
   { text: "Prêt(e) à transformer tes idées en réalité ?" },
 ];
 
