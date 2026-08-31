@@ -302,21 +302,21 @@ function renderEditor() {
     nameInput.maxLength = 20;
     nameInput.value = item.name ?? "";
 
-    const removeBtn = document.createElement("button");
-    removeBtn.type = "button";
-    removeBtn.className = "shortcut-edit-remove";
-    removeBtn.setAttribute("aria-label", "Supprimer ce raccourci");
-    removeBtn.innerHTML = REMOVE_ICON;
-
-    row.append(grip, iconWrap, nameInput, removeBtn);
-
     const urlInput = document.createElement("input");
     urlInput.type = "text";
     urlInput.className = "shortcut-edit-url";
     urlInput.placeholder = "https://exemple.com";
     urlInput.value = item.url ?? "";
 
-    li.append(row, urlInput);
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "shortcut-edit-remove";
+    removeBtn.setAttribute("aria-label", "Supprimer ce raccourci");
+    removeBtn.innerHTML = REMOVE_ICON;
+
+    row.append(grip, iconWrap, nameInput, urlInput, removeBtn);
+
+    li.append(row);
     editList.append(li);
 
     function commit() {

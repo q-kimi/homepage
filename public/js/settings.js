@@ -1,6 +1,7 @@
 import { onEscape } from "./dom-utils.js";
 
 const SHORTCUTS_HIDDEN_KEY = "homepage.shortcuts.hidden";
+const COLLAPSE_DURATION = 300;
 
 const settingsToggle = document.getElementById("settings-toggle");
 const settingsOverlay = document.getElementById("settings-overlay");
@@ -10,15 +11,41 @@ const shortcuts = document.getElementById("shortcuts-wrap");
 const shortcutsToggle = document.getElementById("shortcuts-toggle");
 const shortcutsEditor = document.getElementById("shortcuts-editor");
 
-function applyShortcutsVisibility(hidden) {
-  shortcuts.hidden = hidden;
-  shortcutsEditor.hidden = hidden;
+function collapse(el) {
+  el.classList.add("is-hidden");
+  window.setTimeout(() => {
+    if (el.classList.contains("is-hidden")) el.hidden = true;
+  }, COLLAPSE_DURATION);
+}
+
+function expand(el) {
+  el.hidden = false;
+  void el.offsetHeight;
+  el.classList.remove("is-hidden");
+}
+
+function applyShortcutsVisibility(hidden, animate = true) {
+  if (!animate) {
+    shortcuts.hidden = hidden;
+    shortcutsEditor.hidden = hidden;
+    shortcuts.classList.toggle("is-hidden", hidden);
+    shortcutsEditor.classList.toggle("is-hidden", hidden);
+    return;
+  }
+
+  if (hidden) {
+    collapse(shortcuts);
+    collapse(shortcutsEditor);
+  } else {
+    expand(shortcuts);
+    expand(shortcutsEditor);
+  }
 }
 
 const storedShortcutsHidden = localStorage.getItem(SHORTCUTS_HIDDEN_KEY);
 const shortcutsHidden = storedShortcutsHidden === null ? false : storedShortcutsHidden === "true";
 shortcutsToggle.checked = !shortcutsHidden;
-applyShortcutsVisibility(shortcutsHidden);
+applyShortcutsVisibility(shortcutsHidden, false);
 
 shortcutsToggle.addEventListener("change", () => {
   const hidden = !shortcutsToggle.checked;
@@ -131,8 +158,10 @@ homepageSetupBtn.addEventListener("click", () => {
   const isHidden = homepageInstructions.hidden;
   if (isHidden) {
     renderHomepageInstructions();
+    expand(homepageInstructions);
+  } else {
+    collapse(homepageInstructions);
   }
-  homepageInstructions.hidden = !isHidden;
 });
 
 homepageCopyUrl.addEventListener("click", async () => {
@@ -154,7 +183,7 @@ function openSettings() {
 
 function closeSettings() {
   settingsOverlay.classList.remove("open");
-  homepageInstructions.hidden = true;
+  if (!homepageInstructions.hidden) collapse(homepageInstructions);
 }
 
 settingsToggle.addEventListener("click", openSettings);

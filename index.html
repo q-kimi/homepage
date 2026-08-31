@@ -85,8 +85,6 @@
             </svg>
           </button>
 
-          <ul class="engine-menu" id="engine-menu" role="listbox"></ul>
-
           <a class="ai-button" id="ai-button" href="https://claude.ai/new" target="_blank" rel="noopener" aria-label="Ouvrir Claude"></a>
         </div>
 
@@ -101,22 +99,26 @@
           </button>
         </div>
       </div>
+
+      <ul class="engine-menu" id="engine-menu" role="listbox"></ul>
     </form>
 
     <div class="shortcuts-wrap" id="shortcuts-wrap">
-      <button type="button" class="shortcuts-nav shortcuts-nav-prev" id="shortcuts-prev" aria-label="Raccourcis précédents" hidden>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <div class="shortcuts-viewport">
-        <div class="shortcuts" id="shortcuts"></div>
+      <div class="shortcuts-wrap-inner">
+        <button type="button" class="shortcuts-nav shortcuts-nav-prev" id="shortcuts-prev" aria-label="Raccourcis précédents" hidden>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="shortcuts-viewport">
+          <div class="shortcuts" id="shortcuts"></div>
+        </div>
+        <button type="button" class="shortcuts-nav shortcuts-nav-next" id="shortcuts-next" aria-label="Raccourcis suivants" hidden>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </div>
-      <button type="button" class="shortcuts-nav shortcuts-nav-next" id="shortcuts-next" aria-label="Raccourcis suivants" hidden>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
     </div>
   </div>
 </main>
@@ -129,44 +131,79 @@
   <div class="settings-modal">
     <h2>Paramètres</h2>
 
-    <div class="settings-row">
-      <label for="shortcuts-toggle" class="settings-row-label">Afficher les raccourcis</label>
-      <label class="switch">
-        <input type="checkbox" id="shortcuts-toggle">
-        <span class="switch-track"></span>
-      </label>
-    </div>
-
-    <div class="settings-row">
-      <p class="settings-row-label">Raccourcis IA</p>
-    </div>
-    <div class="ai-picker" id="ai-picker"></div>
-
-    <div id="shortcuts-editor">
+    <div class="settings-section">
       <div class="settings-row">
-        <p class="settings-row-label">Raccourcis</p>
-        <button type="button" class="btn-link" id="shortcuts-add-btn">+ Ajouter</button>
+        <label for="shortcuts-toggle" class="settings-row-label">Afficher les raccourcis</label>
+        <label class="switch">
+          <input type="checkbox" id="shortcuts-toggle">
+          <span class="switch-track"></span>
+        </label>
       </div>
-      <ul class="shortcuts-edit-list" id="shortcuts-edit-list"></ul>
-      <input type="file" id="shortcut-icon-input" accept="image/*,.svg" hidden>
     </div>
 
-    <div class="settings-row">
-      <p class="settings-row-label">Page d'accueil / nouvel onglet</p>
-      <button type="button" class="btn-link" id="homepage-setup-btn">Comment faire ?</button>
+    <div class="settings-section" id="shortcuts-editor">
+      <div class="shortcuts-editor-inner">
+        <div class="settings-section-header settings-section-header-end">
+          <button type="button" class="btn-link" id="shortcuts-add-btn">+ Ajouter</button>
+        </div>
+        <ul class="shortcuts-edit-list" id="shortcuts-edit-list"></ul>
+        <input type="file" id="shortcut-icon-input" accept="image/*,.svg" hidden>
+      </div>
     </div>
-    <div class="homepage-instructions" id="homepage-instructions" hidden>
-      <p class="homepage-instructions-browser" id="homepage-instructions-browser"></p>
-      <ul class="homepage-instructions-list" id="homepage-instructions-list"></ul>
-      <div class="homepage-instructions-actions">
-        <button type="button" class="btn-copy" id="homepage-copy-url">
+
+    <div class="settings-section">
+      <div class="settings-section-title-row">
+        <p class="settings-section-title">Raccourcis IA</p>
+        <button type="button" class="info-btn" aria-label="À quoi ça sert ?" data-tooltip="Ouvre juste la page d'accueil de l'IA choisie. Pour lancer une recherche directement avec une IA, sélectionne-la comme moteur dans le champ de recherche.">?</button>
+      </div>
+      <div class="ai-picker" id="ai-picker"></div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-header">
+        <p class="settings-section-title">Page d'accueil / nouvel onglet</p>
+        <button type="button" class="btn-link" id="homepage-setup-btn">Comment faire ?</button>
+      </div>
+      <div class="homepage-instructions" id="homepage-instructions" hidden>
+        <div class="homepage-instructions-inner">
+          <p class="homepage-instructions-browser" id="homepage-instructions-browser"></p>
+          <ul class="homepage-instructions-list" id="homepage-instructions-list"></ul>
+          <div class="homepage-instructions-actions">
+            <button type="button" class="btn-copy" id="homepage-copy-url">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                <rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2"/>
+                <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              Copier l'URL de cette page
+            </button>
+            <span class="settings-hint" id="homepage-copy-confirm" hidden>Copié !</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title-row">
+        <p class="settings-section-title">Sauvegarde</p>
+        <button type="button" class="info-btn" aria-label="Qu'est-ce que ça sauvegarde ?" data-tooltip="Exporte tes raccourcis, ton moteur/IA préféré, l'affichage des raccourcis et ton historique de recherche dans un fichier JSON, à réimporter plus tard ou sur un autre appareil. Rien n'est envoyé sur un serveur.">?</button>
+      </div>
+      <div class="backup-actions">
+        <button type="button" class="btn-copy" id="backup-export-btn">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-            <rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2"/>
-            <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          Copier l'URL de cette page
+          Exporter
         </button>
-        <span class="settings-hint" id="homepage-copy-confirm" hidden>Copié !</span>
+        <button type="button" class="btn-copy" id="backup-import-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+            <path d="M12 15V3m0 0l-4 4m4-4l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Importer
+        </button>
+        <input type="file" id="backup-import-input" accept="application/json,.json" hidden>
+        <span class="settings-hint" id="backup-confirm" hidden></span>
       </div>
     </div>
 

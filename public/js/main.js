@@ -6,3 +6,4 @@ import "./shortcuts.js";
 import "./settings.js";
 import "./ai-picker.js";
 import "./voice.js";
+import "./backup.js";

@@ -15,16 +15,28 @@ const BRAVE_ICON = `<svg width="18" height="18" viewBox="296 110 2176 2554" xmln
   <path fill="url(#engine-brave-b)" d="M1999 363l-224-253H992L769 363s-196-53-288 37c0 0 260-23 350 123l276 47c32 0 103-27 168-50 65-20 110-22 110-22s44 0 110 22 136 50 168 50c33 0 275-47 275-47 90-146 350-123 350-123-92-92-288-38-288-38"/>
 </svg>`;
 
-const ENGINES = {
-  google: { name: "Google", url: "https://www.google.com/search?q=", icon: GOOGLE_ICON },
-  bing: { name: "Bing", url: "https://www.bing.com/search?q=", icon: BING_ICON },
-  brave: { name: "Brave", url: "https://search.brave.com/search?q=", icon: BRAVE_ICON },
-  chatgpt: { name: "ChatGPT", url: "https://chatgpt.com/?q=", icon: CHATGPT_ICON },
-  grok: { name: "Grok", url: "https://grok.com/?q=", icon: GROK_ICON },
-  claude: { name: "Claude", url: "https://claude.ai/new?q=", icon: CLAUDE_ICON },
-  mistral: { name: "Mistral AI", url: "https://chat.mistral.ai/chat?q=", icon: MISTRAL_ICON },
-  huggingchat: { name: "HuggingChat", url: "https://huggingface.co/chat/?q=", icon: HUGGINGCHAT_ICON },
-};
+const ENGINE_GROUPS = [
+  {
+    label: "Moteurs de recherche",
+    engines: {
+      google: { name: "Google", url: "https://www.google.com/search?q=", icon: GOOGLE_ICON },
+      bing: { name: "Bing", url: "https://www.bing.com/search?q=", icon: BING_ICON },
+      brave: { name: "Brave", url: "https://search.brave.com/search?q=", icon: BRAVE_ICON },
+    },
+  },
+  {
+    label: "Recherche IA",
+    engines: {
+      chatgpt: { name: "ChatGPT", url: "https://chatgpt.com/?q=", icon: CHATGPT_ICON },
+      grok: { name: "Grok", url: "https://grok.com/?q=", icon: GROK_ICON },
+      claude: { name: "Claude", url: "https://claude.ai/new?q=", icon: CLAUDE_ICON },
+      mistral: { name: "Mistral AI", url: "https://chat.mistral.ai/chat?q=", icon: MISTRAL_ICON },
+      huggingchat: { name: "HuggingChat", url: "https://huggingface.co/chat/?q=", icon: HUGGINGCHAT_ICON },
+    },
+  },
+];
+
+const ENGINES = Object.fromEntries(ENGINE_GROUPS.flatMap((group) => Object.entries(group.engines)));
 
 const ENGINE_STORAGE_KEY = "homepage.engine";
 
@@ -41,21 +53,35 @@ if (!ENGINES[currentEngine]) currentEngine = "google";
 function renderEngineMenu() {
   engineMenu.replaceChildren();
 
-  for (const [key, option] of Object.entries(ENGINES)) {
-    const li = document.createElement("li");
-    li.setAttribute("role", "option");
-    li.dataset.engine = key;
+  ENGINE_GROUPS.forEach((group, groupIndex) => {
+    if (groupIndex > 0) {
+      const divider = document.createElement("li");
+      divider.className = "engine-menu-divider";
+      divider.setAttribute("role", "separator");
+      engineMenu.append(divider);
+    }
 
-    const icon = document.createElement("span");
-    icon.className = "engine-icon";
-    icon.innerHTML = option.icon;
+    const heading = document.createElement("li");
+    heading.className = "engine-menu-heading";
+    heading.textContent = group.label;
+    engineMenu.append(heading);
 
-    const label = document.createElement("span");
-    label.textContent = option.name;
+    for (const [key, option] of Object.entries(group.engines)) {
+      const li = document.createElement("li");
+      li.setAttribute("role", "option");
+      li.dataset.engine = key;
 
-    li.append(icon, label);
-    engineMenu.append(li);
-  }
+      const icon = document.createElement("span");
+      icon.className = "engine-icon";
+      icon.innerHTML = option.icon;
+
+      const label = document.createElement("span");
+      label.textContent = option.name;
+
+      li.append(icon, label);
+      engineMenu.append(li);
+    }
+  });
 }
 
 function applyEngine(key) {
