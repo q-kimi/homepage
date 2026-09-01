@@ -1,0 +1,63 @@
+/* Hero: greeting phrase */
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  width: 100vw;
+  padding: 0 24px;
+  box-sizing: border-box;
+  font-size: 32px;
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: -0.5px;
+  text-align: center;
+}
+
+#hero-phrase {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.hero-phrase-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+  font-style: normal;
+  animation: hero-emoji-bounce 1.8s ease-in-out infinite;
+}
+
+.hero-phrase-emoji-clickable {
+  cursor: pointer;
+  border-radius: 6px;
+  transition: transform 0.15s ease;
+}
+
+.hero-phrase-emoji-clickable svg {
+  position: relative;
+  top: 2px;
+}
+
+.hero-phrase-emoji-clickable:hover,
+.hero-phrase-emoji-clickable:focus-visible {
+  transform: scale(1.15);
+  outline: none;
+}
+
+@keyframes hero-emoji-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}

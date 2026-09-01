@@ -1,0 +1,132 @@
+/* Shortcuts */
+
+.shortcuts-wrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  margin-top: 24px;
+  opacity: 1;
+  transition: grid-template-rows 0.3s cubic-bezier(0.22, 1, 0.36, 1), margin-top 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+}
+
+.shortcuts-wrap.is-hidden {
+  grid-template-rows: 0fr;
+  margin-top: 0;
+  opacity: 0;
+}
+
+.shortcuts-wrap[hidden] {
+  display: none;
+}
+
+.shortcuts-wrap-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.shortcuts-viewport {
+  position: relative;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.shortcuts-wrap.paginated .shortcuts-viewport {
+  width: 564px; /* 7 tiles (72px) + 6 gaps (10px); keep in sync with PAGE_SIZE in shortcuts.js */
+  padding: 4px 0;
+}
+
+.shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.shortcuts-wrap.paginated .shortcuts {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  width: max-content;
+}
+
+.shortcuts-nav {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 56px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.shortcuts-nav:hover:not(:disabled) {
+  background: var(--pill-hover);
+  color: var(--text);
+}
+
+.shortcuts-nav:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.shortcuts-nav[hidden] {
+  display: none;
+}
+
+.shortcut-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px;
+  width: 72px;
+  padding: 12px 8px;
+  border-radius: 14px;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.shortcut-tile:hover {
+  background: var(--card);
+  color: var(--text);
+}
+
+.shortcut-tile img {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+}
+
+.shortcut-tile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.shortcut-tile:hover .shortcut-tile-icon {
+  color: #ffffff;
+}
+
+.shortcut-tile span {
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.shortcut-tile span::first-letter {
+  text-transform: uppercase;
+}

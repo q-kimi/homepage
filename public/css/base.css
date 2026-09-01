@@ -1,0 +1,71 @@
+:root {
+  --bg: #131314;
+  --card: #1e1e20;
+  --pill: #2a2a2d;
+  --pill-hover: #333336;
+  --border: #313134;
+  --text: #ececee;
+  --text-dim: #8e8e93;
+  --accent: #f2f2f2;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Shared themed scrollbar */
+
+.themed-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.themed-scroll::-webkit-scrollbar {
+  width: 7px;
+}
+
+.themed-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.themed-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 8px;
+}
+
+.themed-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+/* Layout */
+
+.page {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.hero {
+  width: 100%;
+  max-width: 640px;
+}
+
+/* A blurred backdrop has to keep resampling anything still animating behind
+   it every frame; pausing those animations while an overlay is open removes
+   that continuous repaint cost and keeps the modal itself responsive. */
+body:has(.settings-overlay.open, .history-overlay.open) :is(.hero-phrase-emoji, .typed-cursor, .mic-button.listening) {
+  animation-play-state: paused;
+}

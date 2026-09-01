@@ -44,7 +44,14 @@ homepage/
 └── public/
     ├── favicon.svg
     ├── logo.svg
-    ├── css/style.css
+    ├── css/
+    │   ├── base.css          variables, reset, layout
+    │   ├── hero.css           phrase d'accueil
+    │   ├── search.css          champ de recherche, suggestions, toolbar
+    │   ├── shortcuts.css        raccourcis
+    │   ├── settings.css          bouton + modale Paramètres
+    │   ├── history.css            bouton + modale Historique
+    │   └── reduced-motion.css      respect de prefers-reduced-motion (chargé en dernier)
     └── js/
         ├── main.js         point d'entrée
         ├── dom-utils.js     helpers partagés
@@ -59,7 +66,9 @@ homepage/
         ├── voice.js                  dictée vocale
         ├── backup.js                  export/import de la config
         ├── commands.js                 commandes / (données)
-        └── commands-editor.js           commandes / (éditeur)
+        ├── commands-editor.js           commandes / (éditeur)
+        ├── history.js                    historique (données)
+        └── history-panel.js               historique (panneau)
 ```
 
 ## Déploiement

@@ -1,0 +1,14 @@
+/* Respect reduced-motion preference. Loaded last so these overrides win the
+   cascade regardless of the order of the other stylesheets. */
+
+@media (prefers-reduced-motion: reduce) {
+  .typed-cursor,
+  .mic-button.listening,
+  .hero-phrase-emoji {
+    animation: none;
+  }
+
+  .shortcuts {
+    transition: none;
+  }
+}
