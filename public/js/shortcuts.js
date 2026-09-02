@@ -25,6 +25,7 @@ const GRIP_ICON = `<svg width="10" height="16" viewBox="0 0 10 16" fill="current
 
 const shortcutsRow = document.getElementById("shortcuts");
 const shortcutsWrap = document.getElementById("shortcuts-wrap");
+const shortcutsViewport = document.getElementById("shortcuts-viewport");
 const prevBtn = document.getElementById("shortcuts-prev");
 const nextBtn = document.getElementById("shortcuts-next");
 const editList = document.getElementById("shortcuts-edit-list");
@@ -34,11 +35,25 @@ const contextMenu = document.getElementById("shortcut-context-menu");
 const contextMenuEditBtn = contextMenu.querySelector('[data-action="edit"]');
 const contextMenuDeleteBtn = contextMenu.querySelector('[data-action="delete"]');
 
-const PAGE_SIZE = 7;
+const TILE_SIZE = 72;
+const TILE_GAP = 10;
+const NAV_RESERVE = 64; // space taken by the two nav arrows + their gaps
+const MIN_PAGE_SIZE = 3;
+const MAX_PAGE_SIZE = 7;
 const ICON_MAX_SOURCE_SIZE = 15 * 1024 * 1024;
 const ICON_DIMENSION = 64;
 let page = 0;
+let pageSize = MAX_PAGE_SIZE;
 let iconEditIndex = null;
+
+// Tiles are a fixed pixel width, so how many fit per page depends on the
+// viewport (phone vs. tablet vs. desktop) rather than a constant.
+function computePageSize() {
+  const available = shortcutsWrap.clientWidth - NAV_RESERVE;
+  if (available <= 0) return MAX_PAGE_SIZE;
+  const fit = Math.floor((available + TILE_GAP) / (TILE_SIZE + TILE_GAP));
+  return Math.min(MAX_PAGE_SIZE, Math.max(MIN_PAGE_SIZE, fit));
+}
 
 function resizeIconFile(file) {
   return new Promise((resolve, reject) => {
@@ -255,24 +270,27 @@ function renderShortcutsRow() {
     visibleCount += 1;
   });
 
-  const totalPages = Math.max(1, Math.ceil(visibleCount / PAGE_SIZE));
+  pageSize = computePageSize();
+  const totalPages = Math.max(1, Math.ceil(visibleCount / pageSize));
   page = Math.min(page, totalPages - 1);
-  const paginated = visibleCount > PAGE_SIZE;
+  const paginated = visibleCount > pageSize;
 
   shortcutsWrap.classList.toggle("paginated", paginated);
   prevBtn.hidden = !paginated;
   nextBtn.hidden = !paginated;
   if (paginated) {
+    shortcutsViewport.style.width = `${pageSize * TILE_SIZE + (pageSize - 1) * TILE_GAP}px`;
     prevBtn.disabled = page === 0;
     nextBtn.disabled = page === totalPages - 1;
     updateCarouselPosition();
   } else {
+    shortcutsViewport.style.width = "";
     shortcutsRow.style.transform = "";
   }
 }
 
 function updateCarouselPosition() {
-  const target = shortcutsRow.children[page * PAGE_SIZE];
+  const target = shortcutsRow.children[page * pageSize];
   shortcutsRow.style.transform = target ? `translateX(-${target.offsetLeft}px)` : "";
 }
 
@@ -284,11 +302,20 @@ prevBtn.addEventListener("click", () => {
 });
 
 nextBtn.addEventListener("click", () => {
-  const totalPages = Math.max(1, Math.ceil(shortcutsRow.children.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(shortcutsRow.children.length / pageSize));
   page = Math.min(totalPages - 1, page + 1);
   nextBtn.disabled = page === totalPages - 1;
   prevBtn.disabled = false;
   updateCarouselPosition();
+});
+
+let resizeTimer = null;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    page = 0;
+    renderShortcutsRow();
+  }, 150);
 });
 
 let dragSrcIndex = null;
@@ -505,7 +532,7 @@ contextMenuEditBtn.addEventListener("click", () => {
   const index = contextMenuIndex;
   closeContextMenu();
   if (index === null) return;
-  openSettings();
+  openSettings("shortcuts");
   const row = editList.children[index];
   row?.querySelector(".shortcut-edit-name")?.focus();
   row?.scrollIntoView({ block: "nearest" });

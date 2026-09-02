@@ -23,7 +23,8 @@
   height: 19px;
 }
 
-.history-toggle:hover {
+.history-toggle:hover,
+.history-toggle:focus-visible {
   background: var(--pill);
   color: var(--text);
 }
@@ -72,7 +73,8 @@
   transition: background 0.12s ease, color 0.12s ease;
 }
 
-.history-modal-close:hover {
+.history-modal-close:hover,
+.history-modal-close:focus-visible {
   background: var(--pill);
   color: var(--text);
 }
@@ -180,11 +182,13 @@
   transition: opacity 0.12s ease, background 0.12s ease, color 0.12s ease;
 }
 
-.history-item:hover .history-item-remove {
+.history-item:hover .history-item-remove,
+.history-item:focus-within .history-item-remove {
   opacity: 1;
 }
 
-.history-item-remove:hover {
+.history-item-remove:hover,
+.history-item-remove:focus-visible {
   background: var(--border);
   color: var(--text);
 }

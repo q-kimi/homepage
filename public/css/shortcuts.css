@@ -34,7 +34,8 @@
 }
 
 .shortcuts-wrap.paginated .shortcuts-viewport {
-  width: 564px; /* 7 tiles (72px) + 6 gaps (10px); keep in sync with PAGE_SIZE in shortcuts.js */
+  /* Width is set inline by shortcuts.js: how many tiles fit per page depends
+     on the viewport (phone vs. tablet vs. desktop). */
   padding: 4px 0;
 }
 
@@ -67,7 +68,8 @@
   transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
 }
 
-.shortcuts-nav:hover:not(:disabled) {
+.shortcuts-nav:hover:not(:disabled),
+.shortcuts-nav:focus-visible:not(:disabled) {
   background: var(--pill-hover);
   color: var(--text);
 }
@@ -96,7 +98,8 @@
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-.shortcut-tile:hover {
+.shortcut-tile:hover,
+.shortcut-tile:focus-visible {
   background: var(--card);
   color: var(--text);
 }
@@ -127,7 +130,8 @@
   height: 20px;
 }
 
-.shortcut-tile:hover .shortcut-tile-icon {
+.shortcut-tile:hover .shortcut-tile-icon,
+.shortcut-tile:focus-visible .shortcut-tile-icon {
   color: #ffffff;
 }
 
@@ -197,7 +201,8 @@
   color: var(--text-dim);
 }
 
-.shortcut-context-item:hover:not(:disabled) {
+.shortcut-context-item:hover:not(:disabled),
+.shortcut-context-item:focus-visible:not(:disabled) {
   background: var(--pill);
 }
 

@@ -1,5 +1,6 @@
 import { onEscape } from "./dom-utils.js";
 import { stopTyping, syncFakePlaceholder } from "./placeholder.js";
+import { PSEUDO_KEY, renderGreeting } from "./phrases.js";
 
 const SHORTCUTS_HIDDEN_KEY = "homepage.shortcuts.hidden";
 const COLLAPSE_DURATION = 300;
@@ -9,6 +10,11 @@ const settingsOverlay = document.getElementById("settings-overlay");
 const settingsCancel = document.getElementById("settings-cancel");
 const settingsCloseBtn = document.getElementById("settings-close-btn");
 const settingsSave = document.getElementById("settings-save");
+const pseudoInput = document.getElementById("pseudo-input");
+const settingsTabs = document.querySelectorAll(".settings-tab");
+const settingsPanels = document.querySelectorAll(".settings-tab-panel");
+const settingsTabIndicator = document.getElementById("settings-tab-indicator");
+const settingsTabPanels = document.getElementById("settings-tab-panels");
 const shortcuts = document.getElementById("shortcuts-wrap");
 const shortcutsToggle = document.getElementById("shortcuts-toggle");
 const shortcutsEditor = document.getElementById("shortcuts-editor");
@@ -179,7 +185,55 @@ homepageCopyUrl.addEventListener("click", async () => {
   }
 });
 
-export function openSettings() {
+function positionTabIndicator() {
+  const activeTab = document.querySelector(".settings-tab.active");
+  if (!activeTab) return;
+  settingsTabIndicator.style.left = `${activeTab.offsetLeft}px`;
+  settingsTabIndicator.style.width = `${activeTab.offsetWidth}px`;
+}
+
+let heightAnimTimer = null;
+
+function switchSettingsTab(tab) {
+  const nextPanel = document.getElementById(`settings-panel-${tab}`);
+  if (!nextPanel || !nextPanel.hidden) return;
+
+  const startHeight = settingsTabPanels.getBoundingClientRect().height;
+
+  settingsTabs.forEach((btn) => {
+    const active = btn.dataset.tab === tab;
+    btn.classList.toggle("active", active);
+    btn.setAttribute("aria-selected", String(active));
+  });
+  settingsPanels.forEach((panel) => {
+    panel.hidden = panel.id !== `settings-panel-${tab}`;
+  });
+  positionTabIndicator();
+
+  const endHeight = settingsTabPanels.scrollHeight;
+
+  window.clearTimeout(heightAnimTimer);
+  settingsTabPanels.classList.add("is-animating-height");
+  settingsTabPanels.style.height = `${startHeight}px`;
+  void settingsTabPanels.offsetHeight; // force reflow so the height change below transitions
+  settingsTabPanels.style.height = `${endHeight}px`;
+
+  heightAnimTimer = window.setTimeout(() => {
+    settingsTabPanels.classList.remove("is-animating-height");
+    settingsTabPanels.style.height = "";
+  }, 300);
+}
+
+settingsTabs.forEach((btn) => {
+  btn.addEventListener("click", () => switchSettingsTab(btn.dataset.tab));
+});
+
+window.addEventListener("resize", positionTabIndicator);
+positionTabIndicator();
+
+export function openSettings(tab) {
+  switchSettingsTab(typeof tab === "string" ? tab : "general");
+  pseudoInput.value = localStorage.getItem(PSEUDO_KEY) || "";
   settingsOverlay.classList.add("open");
   stopTyping();
 }
@@ -193,6 +247,21 @@ function closeSettings() {
 settingsToggle.addEventListener("click", openSettings);
 settingsCancel.addEventListener("click", closeSettings);
 settingsCloseBtn.addEventListener("click", closeSettings);
+document.addEventListener("open-settings", openSettings);
+
+pseudoInput.addEventListener("input", () => {
+  const pseudo = pseudoInput.value.trim();
+  if (pseudo) {
+    localStorage.setItem(PSEUDO_KEY, pseudo);
+  } else {
+    localStorage.removeItem(PSEUDO_KEY);
+  }
+  renderGreeting();
+});
+
+pseudoInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") settingsSave.click();
+});
 
 // Track where the mousedown started so a text-selection drag that begins
 // inside the modal and ends up over the backdrop (releasing there) doesn't

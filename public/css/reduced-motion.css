@@ -4,11 +4,15 @@
 @media (prefers-reduced-motion: reduce) {
   .typed-cursor,
   .mic-button.listening,
-  .hero-phrase-emoji {
+  .greeting-emoji-wave,
+  .greeting-emoji-sleep,
+  .settings-tab-panel {
     animation: none;
   }
 
-  .shortcuts {
+  .shortcuts,
+  .settings-tab-indicator,
+  .settings-tab-panels {
     transition: none;
   }
 }

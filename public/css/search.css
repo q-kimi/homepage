@@ -219,7 +219,8 @@
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-.ai-button:hover {
+.ai-button:hover,
+.ai-button:focus-visible {
   background: var(--pill-hover);
   color: var(--text);
 }
@@ -273,7 +274,8 @@
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.ai-picker-option:hover {
+.ai-picker-option:hover,
+.ai-picker-option:focus-visible {
   background: var(--pill-hover);
   color: var(--text);
 }
@@ -296,7 +298,8 @@
   cursor: pointer;
 }
 
-.engine-toggle:hover {
+.engine-toggle:hover,
+.engine-toggle:focus-visible {
   background: var(--pill-hover);
 }
 
@@ -447,7 +450,8 @@
   transform: translateY(0);
 }
 
-.mic-button:hover {
+.mic-button:hover,
+.mic-button:focus-visible {
   background: var(--pill-hover);
   color: var(--text);
 }
@@ -457,7 +461,8 @@
   border-color: rgba(229, 72, 77, 0.35);
 }
 
-.mic-button.mic-blocked:hover {
+.mic-button.mic-blocked:hover,
+.mic-button.mic-blocked:focus-visible {
   background: var(--pill-hover);
   color: #e5484d;
 }
@@ -494,7 +499,8 @@
   transition: transform 0.1s ease, background 0.15s ease;
 }
 
-.search-submit:hover {
+.search-submit:hover,
+.search-submit:focus-visible {
   background: #ffffff;
   transform: scale(1.05);
 }

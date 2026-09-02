@@ -18,46 +18,49 @@
   text-align: center;
 }
 
-#hero-phrase {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-}
-
-.hero-phrase-emoji {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1em;
-  height: 1em;
-  flex: 0 0 auto;
-  font-style: normal;
-  animation: hero-emoji-bounce 1.8s ease-in-out infinite;
-}
-
-.hero-phrase-emoji-clickable {
+.greeting-placeholder {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--text-dim);
   cursor: pointer;
-  border-radius: 6px;
-  transition: transform 0.15s ease;
 }
 
-.hero-phrase-emoji-clickable svg {
-  position: relative;
-  top: 2px;
+.greeting-placeholder:hover,
+.greeting-placeholder:focus-visible {
+  color: var(--accent);
 }
 
-.hero-phrase-emoji-clickable:hover,
-.hero-phrase-emoji-clickable:focus-visible {
-  transform: scale(1.15);
-  outline: none;
+.greeting-emoji {
+  display: inline-block;
 }
 
-@keyframes hero-emoji-bounce {
+.greeting-emoji-wave {
+  transform-origin: 70% 70%;
+  animation: greeting-wave 1.2s ease-in-out infinite;
+}
+
+@keyframes greeting-wave {
   0%, 100% {
-    transform: translateY(0);
+    transform: rotate(-14deg);
   }
   50% {
-    transform: translateY(-4px);
+    transform: rotate(14deg);
+  }
+}
+
+.greeting-emoji-sleep {
+  animation: greeting-sleep 2.6s ease-in-out infinite;
+}
+
+@keyframes greeting-sleep {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-3px);
+    opacity: 1;
   }
 }

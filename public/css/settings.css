@@ -23,7 +23,8 @@
   height: 20px;
 }
 
-.settings-toggle:hover {
+.settings-toggle:hover,
+.settings-toggle:focus-visible {
   background: var(--pill);
   color: var(--text);
 }
@@ -90,6 +91,73 @@
   gap: 12px;
 }
 
+/* Settings modal: tabs */
+
+.settings-tabs {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  margin: 18px 0 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-tab {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.settings-tab:hover,
+.settings-tab:focus-visible {
+  color: var(--text);
+}
+
+.settings-tab.active {
+  color: var(--text);
+}
+
+.settings-tab-indicator {
+  position: absolute;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--accent);
+  transition: left 0.25s cubic-bezier(0.22, 1, 0.36, 1), width 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.settings-tab-panel[hidden] {
+  display: none;
+}
+
+@keyframes settings-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.settings-tab-panel {
+  animation: settings-panel-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.settings-tab-panels {
+  transition: height 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.settings-tab-panels.is-animating-height {
+  overflow: hidden;
+}
+
 .settings-modal label {
   display: block;
   margin: 0 0 8px;
@@ -133,7 +201,8 @@
   color: var(--text-dim);
 }
 
-.btn-ghost:hover {
+.btn-ghost:hover,
+.btn-ghost:focus-visible {
   color: var(--text);
 }
 
@@ -143,7 +212,8 @@
   font-weight: 500;
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:focus-visible {
   background: #ffffff;
 }
 
@@ -157,7 +227,8 @@
   cursor: pointer;
 }
 
-.btn-link:hover {
+.btn-link:hover,
+.btn-link:focus-visible {
   color: var(--text);
 }
 
@@ -166,7 +237,8 @@
   text-decoration: underline;
 }
 
-.instructions-link:hover {
+.instructions-link:hover,
+.instructions-link:focus-visible {
   color: var(--text);
 }
 
@@ -179,7 +251,7 @@
 }
 
 .settings-section:first-of-type {
-  margin-top: 20px;
+  margin-top: 16px;
   padding-top: 0;
   border-top: none;
 }
@@ -441,7 +513,8 @@
   transition: border-color 0.15s ease;
 }
 
-.shortcut-edit-icon:hover {
+.shortcut-edit-icon:hover,
+.shortcut-edit-icon:focus-visible {
   border-color: var(--border);
 }
 
@@ -473,7 +546,8 @@
   height: 8px;
 }
 
-.shortcut-edit-icon-reset:hover {
+.shortcut-edit-icon-reset:hover,
+.shortcut-edit-icon-reset:focus-visible {
   background: var(--pill-hover);
   color: var(--text);
 }
@@ -493,8 +567,9 @@
 }
 
 .shortcut-edit-name {
-  flex: 0 1 140px;
-  min-width: 0;
+  flex: 0 0 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 14px;
   font-weight: 500;
   padding: 5px 6px;
@@ -541,7 +616,8 @@
   opacity: 1;
 }
 
-.shortcut-edit-remove:hover {
+.shortcut-edit-remove:hover,
+.shortcut-edit-remove:focus-visible {
   background: var(--border);
   color: var(--text);
 }
@@ -607,8 +683,9 @@
 }
 
 .command-edit-name {
-  flex: 0 1 110px;
-  min-width: 0;
+  flex: 0 0 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 13px;
   padding: 5px 6px;
   border-left: 1px solid var(--border);
@@ -657,7 +734,8 @@
   opacity: 1;
 }
 
-.command-edit-remove:hover {
+.command-edit-remove:hover,
+.command-edit-remove:focus-visible {
   background: var(--border);
   color: var(--text);
 }
@@ -742,7 +820,8 @@
   cursor: pointer;
 }
 
-.btn-copy:hover {
+.btn-copy:hover,
+.btn-copy:focus-visible {
   border-color: var(--text-dim);
 }
 

@@ -107,7 +107,7 @@ function renderCommandSuggestions(entries) {
 
   const heading = document.createElement("li");
   heading.className = "suggestions-list-heading";
-  heading.textContent = "Commande link";
+  heading.textContent = "Commandes";
   list.appendChild(heading);
 
   entries.forEach((command, i) => {

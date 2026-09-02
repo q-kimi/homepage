@@ -21,7 +21,7 @@ Remplace la page "Nouvel onglet" du navigateur par une page de recherche minimal
 | **Raccourcis** | Ajout, édition, suppression, icônes personnalisées, glisser-déposer pour réordonner. Pagination automatique passé 7 raccourcis. |
 | **IA** | Accès direct à Claude, ChatGPT, Grok, Copilot, Gemini, Mistral AI ou HuggingChat, au choix. |
 | **Voix** | Dictée vocale via la Web Speech API, quand le navigateur la supporte. |
-| **Accueil** | Une phrase différente à chaque visite, renouvelée toutes les 30 minutes, plutôt qu'un simple "Bonjour". |
+| **Accueil** | Salutation selon l'heure : Bonjour, Bon après-midi, Bonsoir ou Bonne nuit. |
 | **Sauvegarde** | Export/import de toute la config (raccourcis, moteur, historique...) en fichier JSON, depuis les paramètres. |
 
 ## Lancer en local
@@ -46,19 +46,20 @@ homepage/
     ├── logo.svg
     ├── css/
     │   ├── base.css          variables, reset, layout
-    │   ├── hero.css           phrase d'accueil
+    │   ├── hero.css           salutation d'accueil
     │   ├── search.css          champ de recherche, suggestions, toolbar
     │   ├── shortcuts.css        raccourcis
     │   ├── settings.css          bouton + modale Paramètres
     │   ├── history.css            bouton + modale Historique
-    │   └── reduced-motion.css      respect de prefers-reduced-motion (chargé en dernier)
+    │   ├── reduced-motion.css      respect de prefers-reduced-motion
+    │   └── responsive.css           breakpoints tablette/mobile (chargé en dernier)
     └── js/
         ├── main.js         point d'entrée
         ├── dom-utils.js     helpers partagés
         ├── engines.js        moteur de recherche
         ├── autocomplete.js    suggestions
         ├── placeholder.js      machine à écrire
-        ├── phrases.js            phrase d'accueil
+        ├── phrases.js            salutation d'accueil
         ├── shortcuts.js           raccourcis
         ├── ai-icons.js              icônes des assistants IA
         ├── ai-picker.js            sélecteur d'IA

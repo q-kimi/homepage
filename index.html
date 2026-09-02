@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="/css/settings.css" class="site-stylesheet">
 <link rel="stylesheet" href="/css/history.css" class="site-stylesheet">
 <link rel="stylesheet" href="/css/reduced-motion.css" class="site-stylesheet">
+<link rel="stylesheet" href="/css/responsive.css" class="site-stylesheet">
 <script>
   (function () {
     document.querySelectorAll(".site-stylesheet").forEach(function (link) {
@@ -151,7 +152,7 @@
             <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-        <div class="shortcuts-viewport">
+        <div class="shortcuts-viewport" id="shortcuts-viewport">
           <div class="shortcuts" id="shortcuts"></div>
         </div>
         <button type="button" class="shortcuts-nav shortcuts-nav-next" id="shortcuts-next" aria-label="Raccourcis suivants" hidden>
@@ -209,88 +210,111 @@
       </button>
     </div>
 
-    <div class="settings-section">
-      <div class="settings-row">
-        <label for="shortcuts-toggle" class="settings-row-label">Afficher les raccourcis</label>
-        <label class="switch">
-          <input type="checkbox" id="shortcuts-toggle">
-          <span class="switch-track"></span>
-        </label>
-      </div>
+    <div class="settings-tabs" role="tablist" aria-label="Sections des paramètres">
+      <button type="button" class="settings-tab active" id="settings-tab-general" role="tab" aria-selected="true" aria-controls="settings-panel-general" data-tab="general">Général</button>
+      <button type="button" class="settings-tab" id="settings-tab-shortcuts" role="tab" aria-selected="false" aria-controls="settings-panel-shortcuts" data-tab="shortcuts">Raccourcis</button>
+      <button type="button" class="settings-tab" id="settings-tab-commands" role="tab" aria-selected="false" aria-controls="settings-panel-commands" data-tab="commands">Commandes</button>
+      <button type="button" class="settings-tab" id="settings-tab-backup" role="tab" aria-selected="false" aria-controls="settings-panel-backup" data-tab="backup">Sauvegarde</button>
+      <span class="settings-tab-indicator" id="settings-tab-indicator" aria-hidden="true"></span>
     </div>
 
-    <div class="settings-section" id="shortcuts-editor">
-      <div class="shortcuts-editor-inner">
-        <div class="settings-section-header settings-section-header-end">
-          <button type="button" class="btn-link" id="shortcuts-add-btn">+ Ajouter</button>
+    <div class="settings-tab-panels" id="settings-tab-panels">
+    <div class="settings-tab-panel" id="settings-panel-general" role="tabpanel" aria-labelledby="settings-tab-general">
+      <div class="settings-section">
+        <label for="pseudo-input">Comment tu t'appelles ?</label>
+        <input type="text" id="pseudo-input" placeholder="Ton prénom" maxlength="30">
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title-row">
+          <p class="settings-section-title">Raccourcis IA</p>
+          <button type="button" class="info-btn" aria-label="À quoi ça sert ?" data-tooltip="Ouvre juste la page d'accueil de l'IA choisie. Pour lancer une recherche directement avec une IA, sélectionne-la comme moteur dans le champ de recherche.">?</button>
         </div>
-        <ul class="shortcuts-edit-list themed-scroll" id="shortcuts-edit-list"></ul>
-        <input type="file" id="shortcut-icon-input" accept="image/*,.svg" hidden>
+        <div class="ai-picker" id="ai-picker"></div>
       </div>
-    </div>
 
-    <div class="settings-section">
-      <div class="settings-section-title-row">
-        <p class="settings-section-title">Raccourcis IA</p>
-        <button type="button" class="info-btn" aria-label="À quoi ça sert ?" data-tooltip="Ouvre juste la page d'accueil de l'IA choisie. Pour lancer une recherche directement avec une IA, sélectionne-la comme moteur dans le champ de recherche.">?</button>
-      </div>
-      <div class="ai-picker" id="ai-picker"></div>
-    </div>
-
-    <div class="settings-section">
-      <div class="settings-section-header">
-        <p class="settings-section-title">Page d'accueil / nouvel onglet</p>
-        <button type="button" class="btn-link" id="homepage-setup-btn">Comment faire ?</button>
-      </div>
-      <div class="homepage-instructions" id="homepage-instructions" hidden>
-        <div class="homepage-instructions-inner">
-          <p class="homepage-instructions-browser" id="homepage-instructions-browser"></p>
-          <ul class="homepage-instructions-list" id="homepage-instructions-list"></ul>
-          <div class="homepage-instructions-actions">
-            <button type="button" class="btn-copy" id="homepage-copy-url">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                <rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2"/>
-                <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="2"/>
-              </svg>
-              Copier l'URL de cette page
-            </button>
-            <span class="settings-hint" id="homepage-copy-confirm" hidden>Copié !</span>
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <p class="settings-section-title">Page d'accueil / nouvel onglet</p>
+          <button type="button" class="btn-link" id="homepage-setup-btn">Comment faire ?</button>
+        </div>
+        <div class="homepage-instructions" id="homepage-instructions" hidden>
+          <div class="homepage-instructions-inner">
+            <p class="homepage-instructions-browser" id="homepage-instructions-browser"></p>
+            <ul class="homepage-instructions-list" id="homepage-instructions-list"></ul>
+            <div class="homepage-instructions-actions">
+              <button type="button" class="btn-copy" id="homepage-copy-url">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2"/>
+                  <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Copier l'URL de cette page
+              </button>
+              <span class="settings-hint" id="homepage-copy-confirm" hidden>Copié !</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="settings-section">
-      <div class="settings-section-header">
-        <p class="settings-section-title">Commandes link</p>
-        <button type="button" class="btn-link" id="commands-add-btn">+ Ajouter</button>
+    <div class="settings-tab-panel" id="settings-panel-shortcuts" role="tabpanel" aria-labelledby="settings-tab-shortcuts" hidden>
+      <div class="settings-section">
+        <div class="settings-row">
+          <label for="shortcuts-toggle" class="settings-row-label">Afficher les raccourcis</label>
+          <label class="switch">
+            <input type="checkbox" id="shortcuts-toggle">
+            <span class="switch-track"></span>
+          </label>
+        </div>
       </div>
-      <ul class="commands-edit-list themed-scroll" id="commands-edit-list"></ul>
+
+      <div class="settings-section" id="shortcuts-editor">
+        <div class="shortcuts-editor-inner">
+          <div class="settings-section-header settings-section-header-end">
+            <button type="button" class="btn-link" id="shortcuts-add-btn">+ Ajouter</button>
+          </div>
+          <ul class="shortcuts-edit-list themed-scroll" id="shortcuts-edit-list"></ul>
+          <input type="file" id="shortcut-icon-input" accept="image/*,.svg" hidden>
+        </div>
+      </div>
     </div>
 
-    <div class="settings-section">
-      <div class="settings-section-title-row">
-        <p class="settings-section-title">Sauvegarde</p>
-        <button type="button" class="info-btn" aria-label="Qu'est-ce que ça sauvegarde ?" data-tooltip="Exporte tes raccourcis, ton moteur/IA préféré, l'affichage des raccourcis et ton historique de recherche dans un fichier JSON, à réimporter plus tard ou sur un autre appareil. Rien n'est envoyé sur un serveur.">?</button>
+    <div class="settings-tab-panel" id="settings-panel-commands" role="tabpanel" aria-labelledby="settings-tab-commands" hidden>
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <p class="settings-section-title">Commandes</p>
+          <button type="button" class="btn-link" id="commands-add-btn">+ Ajouter</button>
+        </div>
+        <ul class="commands-edit-list themed-scroll" id="commands-edit-list"></ul>
       </div>
-      <div class="backup-actions">
-        <button type="button" class="btn-copy" id="backup-export-btn">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-            <path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Exporter
-        </button>
-        <button type="button" class="btn-copy" id="backup-import-btn">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-            <path d="M12 15V3m0 0l-4 4m4-4l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Importer
-        </button>
-        <input type="file" id="backup-import-input" accept="application/json,.json" hidden>
-        <span class="settings-hint" id="backup-confirm" hidden></span>
+    </div>
+
+    <div class="settings-tab-panel" id="settings-panel-backup" role="tabpanel" aria-labelledby="settings-tab-backup" hidden>
+      <div class="settings-section">
+        <div class="settings-section-title-row">
+          <p class="settings-section-title">Sauvegarde</p>
+          <button type="button" class="info-btn" aria-label="Qu'est-ce que ça sauvegarde ?" data-tooltip="Exporte tes raccourcis, ton moteur/IA préféré, l'affichage des raccourcis et ton historique de recherche dans un fichier JSON, à réimporter plus tard ou sur un autre appareil. Rien n'est envoyé sur un serveur.">?</button>
+        </div>
+        <div class="backup-actions">
+          <button type="button" class="btn-copy" id="backup-export-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Exporter
+          </button>
+          <button type="button" class="btn-copy" id="backup-import-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <path d="M12 15V3m0 0l-4 4m4-4l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Importer
+          </button>
+          <input type="file" id="backup-import-input" accept="application/json,.json" hidden>
+          <span class="settings-hint" id="backup-confirm" hidden></span>
+        </div>
       </div>
+    </div>
     </div>
 
     <div class="settings-actions">

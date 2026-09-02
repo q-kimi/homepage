@@ -51,7 +51,8 @@ body {
 /* Layout */
 
 .page {
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,6 +67,6 @@ body {
 /* A blurred backdrop has to keep resampling anything still animating behind
    it every frame; pausing those animations while an overlay is open removes
    that continuous repaint cost and keeps the modal itself responsive. */
-body:has(.settings-overlay.open, .history-overlay.open) :is(.hero-phrase-emoji, .typed-cursor, .mic-button.listening) {
+body:has(.settings-overlay.open, .history-overlay.open) :is(.typed-cursor, .mic-button.listening, .greeting-emoji-wave, .greeting-emoji-sleep) {
   animation-play-state: paused;
 }

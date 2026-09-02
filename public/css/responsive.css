@@ -1,0 +1,114 @@
+/* Responsive layout. Loaded last so breakpoint overrides win the cascade
+   regardless of the order of the other stylesheets. */
+
+/* Touch devices have no hover state, so hover-only controls (remove
+   buttons, etc.) need to stay visible or they're undiscoverable. */
+@media (hover: none) {
+  .shortcut-edit-remove,
+  .command-edit-remove,
+  .history-item-remove {
+    opacity: 1;
+  }
+}
+
+/* Tablet */
+@media (max-width: 860px) {
+  .settings-modal {
+    max-width: 92vw;
+  }
+}
+
+/* Phone (portrait and landscape) */
+@media (max-width: 600px) {
+  .page {
+    padding: 16px;
+  }
+
+  .heading {
+    font-size: 24px;
+    padding: 0 16px;
+    margin-bottom: 16px;
+  }
+
+  .search-card {
+    padding: 14px 14px 12px;
+    border-radius: 20px;
+  }
+
+  .toolbar {
+    row-gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar-left {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  #engine-name {
+    display: none;
+  }
+
+  .engine-toggle {
+    padding: 8px 10px;
+  }
+
+  .engine-menu {
+    right: 0;
+    left: 0;
+    top: calc(100% + 8px);
+    min-width: 0;
+    transform-origin: top center;
+    transform: translateY(-6px) scale(0.98);
+  }
+
+  .engine-menu.open {
+    transform: translateY(0) scale(1);
+  }
+
+  .settings-overlay,
+  .history-overlay {
+    padding: 14px;
+  }
+
+  .settings-modal,
+  .history-modal {
+    max-width: 100%;
+    padding: 20px 16px;
+  }
+
+  .shortcut-context-menu {
+    min-width: 160px;
+  }
+
+  .settings-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+
+  .settings-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .settings-tab {
+    flex: 0 0 auto;
+  }
+
+  .settings-toggle {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .history-toggle {
+    right: 50px;
+    bottom: 12px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+  .heading {
+    font-size: 20px;
+  }
+}
