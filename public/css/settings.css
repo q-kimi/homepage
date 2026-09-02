@@ -83,6 +83,13 @@
   font-weight: 600;
 }
 
+.settings-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .settings-modal label {
   display: block;
   margin: 0 0 8px;

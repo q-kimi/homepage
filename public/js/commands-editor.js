@@ -82,7 +82,7 @@ function renderEditor() {
 
 addBtn.addEventListener("click", () => {
   const current = loadCommands();
-  current.push({ key: "", name: "", url: "", home: "" });
+  current.push({ key: "", name: "", url: "https://", home: "" });
   saveCommands(current);
   renderEditor();
   editList.querySelector(".command-edit-item:last-child .command-edit-key")?.focus();

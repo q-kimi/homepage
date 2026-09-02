@@ -15,6 +15,7 @@ const historyOverlay = document.getElementById("history-overlay");
 const historyList = document.getElementById("history-list");
 const historyEmpty = document.getElementById("history-empty");
 const historyClearBtn = document.getElementById("history-clear-btn");
+const historyCloseBtn = document.getElementById("history-close-btn");
 const historySearch = document.getElementById("history-search");
 
 function isSameDay(a, b) {
@@ -112,6 +113,8 @@ historyClearBtn.addEventListener("click", () => {
   clearHistory();
   renderHistory();
 });
+
+historyCloseBtn.addEventListener("click", closeHistory);
 
 let overlayMouseDownTarget = null;
 

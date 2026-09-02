@@ -7,6 +7,7 @@ const COLLAPSE_DURATION = 300;
 const settingsToggle = document.getElementById("settings-toggle");
 const settingsOverlay = document.getElementById("settings-overlay");
 const settingsCancel = document.getElementById("settings-cancel");
+const settingsCloseBtn = document.getElementById("settings-close-btn");
 const settingsSave = document.getElementById("settings-save");
 const shortcuts = document.getElementById("shortcuts-wrap");
 const shortcutsToggle = document.getElementById("shortcuts-toggle");
@@ -178,7 +179,7 @@ homepageCopyUrl.addEventListener("click", async () => {
   }
 });
 
-function openSettings() {
+export function openSettings() {
   settingsOverlay.classList.add("open");
   stopTyping();
 }
@@ -191,6 +192,7 @@ function closeSettings() {
 
 settingsToggle.addEventListener("click", openSettings);
 settingsCancel.addEventListener("click", closeSettings);
+settingsCloseBtn.addEventListener("click", closeSettings);
 
 // Track where the mousedown started so a text-selection drag that begins
 // inside the modal and ends up over the backdrop (releasing there) doesn't

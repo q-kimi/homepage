@@ -85,6 +85,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   gap: 8px;
   width: 72px;
@@ -98,6 +99,18 @@
 .shortcut-tile:hover {
   background: var(--card);
   color: var(--text);
+}
+
+.shortcut-tile.dragging {
+  opacity: 0.4;
+}
+
+.shortcut-tile.drag-over-left {
+  box-shadow: inset 2px 0 0 0 var(--accent);
+}
+
+.shortcut-tile.drag-over-right {
+  box-shadow: inset -2px 0 0 0 var(--accent);
 }
 
 .shortcut-tile img {
@@ -118,6 +131,18 @@
   color: #ffffff;
 }
 
+.shortcut-tile-icon-only img,
+.shortcut-tile-icon-only .shortcut-tile-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.shortcut-tile-icon-only .shortcut-tile-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
 .shortcut-tile span {
   font-size: 12px;
   text-align: center;
@@ -129,4 +154,68 @@
 
 .shortcut-tile span::first-letter {
   text-transform: uppercase;
+}
+
+/* Shortcut context menu */
+
+.shortcut-context-menu {
+  position: fixed;
+  z-index: 60;
+  min-width: 190px;
+  padding: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.shortcut-context-menu[hidden] {
+  display: none;
+}
+
+.shortcut-context-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.shortcut-context-item svg {
+  flex: 0 0 auto;
+  color: var(--text-dim);
+}
+
+.shortcut-context-item:hover:not(:disabled) {
+  background: var(--pill);
+}
+
+.shortcut-context-item:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.shortcut-context-item-danger {
+  color: #f36a6a;
+}
+
+.shortcut-context-item-danger svg {
+  color: #f36a6a;
+}
+
+.shortcut-context-sep {
+  height: 1px;
+  margin: 5px 2px;
+  background: var(--border);
 }

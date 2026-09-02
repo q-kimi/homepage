@@ -51,6 +51,32 @@
   margin: 0;
 }
 
+.history-modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.history-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.history-modal-close:hover {
+  background: var(--pill);
+  color: var(--text);
+}
+
 .history-search {
   width: 100%;
   background: var(--pill);

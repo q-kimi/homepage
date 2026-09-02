@@ -1,4 +1,5 @@
-import { readJsonArray } from "./dom-utils.js";
+import { readJsonArray, onClickOutside, onEscape } from "./dom-utils.js";
+import { openSettings } from "./settings.js";
 
 const SHORTCUTS_KEY = "homepage.shortcuts";
 
@@ -29,6 +30,9 @@ const nextBtn = document.getElementById("shortcuts-next");
 const editList = document.getElementById("shortcuts-edit-list");
 const addBtn = document.getElementById("shortcuts-add-btn");
 const iconInput = document.getElementById("shortcut-icon-input");
+const contextMenu = document.getElementById("shortcut-context-menu");
+const contextMenuEditBtn = contextMenu.querySelector('[data-action="edit"]');
+const contextMenuDeleteBtn = contextMenu.querySelector('[data-action="delete"]');
 
 const PAGE_SIZE = 7;
 const ICON_MAX_SOURCE_SIZE = 15 * 1024 * 1024;
@@ -153,20 +157,37 @@ function renderIcon(container, url, customIcon) {
   container.append(img);
 }
 
+let rowDragSrcIndex = null;
+
+function clearRowDragIndicators() {
+  shortcutsRow.querySelectorAll(".shortcut-tile").forEach((el) => {
+    el.classList.remove("drag-over-left", "drag-over-right", "dragging");
+  });
+}
+
+function setRowDragIndicator(targetTile, position) {
+  shortcutsRow.querySelectorAll(".shortcut-tile").forEach((el) => {
+    el.classList.toggle("drag-over-left", el === targetTile && position === "before");
+    el.classList.toggle("drag-over-right", el === targetTile && position === "after");
+  });
+}
+
 function renderShortcutsRow() {
   const list = loadShortcuts();
   shortcutsRow.replaceChildren();
 
   let visibleCount = 0;
-  for (const { name, url, icon } of list) {
+  list.forEach(({ name, url, icon }, index) => {
     const safeUrl = normalizeUrl(url);
-    if (!safeUrl) continue;
+    if (!safeUrl) return;
 
     const a = document.createElement("a");
     a.className = "shortcut-tile";
     a.href = safeUrl;
     a.target = "_blank";
     a.rel = "noopener";
+    a.dataset.index = String(index);
+    a.draggable = true;
 
     const iconWrap = document.createElement("span");
     iconWrap.className = "shortcut-tile-icon";
@@ -179,8 +200,9 @@ function renderShortcutsRow() {
       span.textContent = trimmedName;
       a.append(span);
     } else {
-      // No name set: show the icon alone, but still give it an accessible
-      // label so it isn't just a blank link for screen readers.
+      // No name set: show the icon alone, enlarged and centered so the tile
+      // doesn't look like it's leaving room for an invisible label.
+      a.classList.add("shortcut-tile-icon-only");
       const label = hostnameOf(url);
       if (label) {
         a.setAttribute("aria-label", label);
@@ -188,9 +210,50 @@ function renderShortcutsRow() {
       }
     }
 
+    a.addEventListener("dragstart", (e) => {
+      rowDragSrcIndex = index;
+      a.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", String(index));
+      e.dataTransfer.setDragImage(a, e.offsetX, e.offsetY);
+    });
+
+    a.addEventListener("dragend", () => {
+      clearRowDragIndicators();
+      rowDragSrcIndex = null;
+    });
+
+    a.addEventListener("dragover", (e) => {
+      if (rowDragSrcIndex === null || index === rowDragSrcIndex) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      const rect = a.getBoundingClientRect();
+      const isAfter = e.clientX - rect.left > rect.width / 2;
+      setRowDragIndicator(a, isAfter ? "after" : "before");
+    });
+
+    a.addEventListener("drop", (e) => {
+      e.preventDefault();
+      if (rowDragSrcIndex === null || index === rowDragSrcIndex) return;
+
+      const rect = a.getBoundingClientRect();
+      const isAfter = e.clientX - rect.left > rect.width / 2;
+      let targetIndex = index + (isAfter ? 1 : 0);
+
+      const current = loadShortcuts();
+      const [moved] = current.splice(rowDragSrcIndex, 1);
+      if (rowDragSrcIndex < targetIndex) targetIndex -= 1;
+      current.splice(targetIndex, 0, moved);
+
+      saveShortcuts(current);
+      rowDragSrcIndex = null;
+      renderShortcutsRow();
+      renderEditor();
+    });
+
     shortcutsRow.append(a);
     visibleCount += 1;
-  }
+  });
 
   const totalPages = Math.max(1, Math.ceil(visibleCount / PAGE_SIZE));
   page = Math.min(page, totalPages - 1);
@@ -382,7 +445,7 @@ function renderEditor() {
 
 addBtn.addEventListener("click", () => {
   const current = loadShortcuts();
-  current.push({ name: "", url: "" });
+  current.push({ name: "", url: "https://" });
   saveShortcuts(current);
   renderEditor();
   editList.querySelector(".shortcut-edit-item:last-child .shortcut-edit-name")?.focus();
@@ -410,6 +473,57 @@ iconInput.addEventListener("change", async () => {
     // Ignore: the icon just stays whatever it was before the failed upload.
   }
 });
+
+let contextMenuIndex = null;
+
+function closeContextMenu() {
+  contextMenu.hidden = true;
+}
+
+function openContextMenu(index, x, y) {
+  contextMenuIndex = index;
+
+  contextMenu.hidden = false;
+  contextMenu.style.left = "0px";
+  contextMenu.style.top = "0px";
+
+  const rect = contextMenu.getBoundingClientRect();
+  const maxX = Math.max(8, window.innerWidth - rect.width - 8);
+  const maxY = Math.max(8, window.innerHeight - rect.height - 8);
+  contextMenu.style.left = `${Math.min(x, maxX)}px`;
+  contextMenu.style.top = `${Math.min(y, maxY)}px`;
+}
+
+shortcutsRow.addEventListener("contextmenu", (e) => {
+  const tile = e.target.closest(".shortcut-tile");
+  if (!tile) return;
+  e.preventDefault();
+  openContextMenu(Number(tile.dataset.index), e.clientX, e.clientY);
+});
+
+contextMenuEditBtn.addEventListener("click", () => {
+  const index = contextMenuIndex;
+  closeContextMenu();
+  if (index === null) return;
+  openSettings();
+  const row = editList.children[index];
+  row?.querySelector(".shortcut-edit-name")?.focus();
+  row?.scrollIntoView({ block: "nearest" });
+});
+
+contextMenuDeleteBtn.addEventListener("click", () => {
+  const index = contextMenuIndex;
+  closeContextMenu();
+  if (index === null) return;
+  const current = loadShortcuts();
+  current.splice(index, 1);
+  saveShortcuts(current);
+  renderShortcutsRow();
+  renderEditor();
+});
+
+onEscape(closeContextMenu);
+onClickOutside([contextMenu], closeContextMenu);
 
 renderShortcutsRow();
 renderEditor();
