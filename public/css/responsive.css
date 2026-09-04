@@ -105,6 +105,11 @@
     right: 50px;
     bottom: 12px;
   }
+
+  .github-toggle {
+    right: 88px;
+    bottom: 12px;
+  }
 }
 
 /* Small phones */

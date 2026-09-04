@@ -29,6 +29,17 @@
   color: var(--text);
 }
 
+.settings-toggle[data-tooltip]::after {
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+}
+
+.settings-toggle[data-tooltip]:hover::after,
+.settings-toggle[data-tooltip]:focus-visible::after {
+  transform: translate(-50%, 0);
+}
+
 /* Settings modal (shell shared with the history modal and folder popup) */
 
 .settings-overlay,
@@ -471,6 +482,7 @@
 }
 
 .shortcut-edit-row {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -631,6 +643,144 @@
   font-size: 12px;
   color: var(--text-dim);
   white-space: nowrap;
+}
+
+.shortcut-edit-folder-toggle {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.shortcut-edit-folder-toggle:hover,
+.shortcut-edit-folder-toggle:focus-visible {
+  background: var(--pill-hover);
+  color: var(--text);
+}
+
+.shortcut-edit-folder-toggle svg {
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.shortcut-edit-visibility {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, opacity 0.12s ease;
+}
+
+.shortcut-edit-visibility:hover,
+.shortcut-edit-visibility:focus-visible {
+  background: var(--pill-hover);
+  color: var(--text);
+}
+
+.shortcut-edit-visibility.is-hidden-item {
+  color: #e0a336;
+}
+
+.shortcut-edit-visibility:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.shortcut-edit-item-hidden {
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+}
+
+.shortcut-edit-item-hidden:hover,
+.shortcut-edit-item-hidden:focus-within {
+  opacity: 0.8;
+}
+
+/* Hidden items: their name/link text and icon are covered by a layer of
+   constantly shuffling runes (Standard Galactic Alphabet / Minecraft
+   enchanting-table style) instead of the real content. The real input and
+   icon underneath are untouched and still fully usable — the text overlay
+   just hides while its field is focused, and icon clicks pass straight
+   through (see shortcuts.js). */
+.shortcut-edit-glitch-overlay,
+.shortcut-edit-glitch-icon-overlay {
+  position: absolute;
+  background: var(--pill);
+  color: var(--text-dim);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.shortcut-edit-glitch-overlay {
+  display: flex;
+  align-items: center;
+  padding: 5px 6px;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  border-radius: 6px;
+  transition: opacity 0.1s ease;
+}
+
+.shortcut-edit-glitch-overlay.shortcut-edit-glitch-overlay-url {
+  border-left: 1px solid var(--border);
+  border-radius: 0 6px 6px 0;
+}
+
+.shortcut-edit-glitch-icon-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.shortcut-edit-item.expanded .shortcut-edit-folder-toggle svg {
+  transform: rotate(90deg);
+}
+
+.shortcut-edit-folder-items-wrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition: grid-template-rows 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease, margin-top 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  margin-top: 8px;
+}
+
+.shortcut-edit-folder-items-wrap.is-collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: 0;
+}
+
+.shortcut-edit-folder-items-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.shortcut-edit-folder-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0 0 0 20px;
+  list-style: none;
 }
 
 /* Settings modal: commands editor */

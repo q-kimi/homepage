@@ -14,7 +14,17 @@
 
   .shortcuts,
   .settings-tab-indicator,
-  .settings-tab-panels {
+  .settings-tab-panels,
+  .shortcut-edit-folder-items-wrap,
+  .shortcut-edit-folder-toggle svg {
     transition: none;
+  }
+
+  /* The shuffling-rune overlays are JS-driven (shortcuts.js checks this same
+     preference before starting them), but hide them here too as a
+     static-CSS fallback in case JS hasn't run yet. */
+  .shortcut-edit-glitch-overlay,
+  .shortcut-edit-glitch-icon-overlay {
+    display: none;
   }
 }

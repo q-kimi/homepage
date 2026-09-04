@@ -1,4 +1,5 @@
 import { loadCommands, saveCommands, deriveHome } from "./commands.js";
+import { dedupeUrlScheme } from "./dom-utils.js";
 
 const REMOVE_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none">
   <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
@@ -69,7 +70,10 @@ function renderEditor() {
 
     keyInput.addEventListener("input", commit);
     nameInput.addEventListener("input", commit);
-    urlInput.addEventListener("input", commit);
+    urlInput.addEventListener("input", () => {
+      dedupeUrlScheme(urlInput);
+      commit();
+    });
 
     removeBtn.addEventListener("click", () => {
       const current = loadCommands();

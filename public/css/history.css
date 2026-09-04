@@ -29,6 +29,54 @@
   color: var(--text);
 }
 
+.history-toggle[data-tooltip]::after {
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+}
+
+.history-toggle[data-tooltip]:hover::after,
+.history-toggle[data-tooltip]:focus-visible::after {
+  transform: translate(-50%, 0);
+}
+
+/* GitHub link */
+
+.github-toggle {
+  position: fixed;
+  right: 108px;
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.github-toggle:hover,
+.github-toggle:focus-visible {
+  background: var(--pill);
+  color: var(--text);
+}
+
+.github-toggle[data-tooltip]::after {
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+}
+
+.github-toggle[data-tooltip]:hover::after,
+.github-toggle[data-tooltip]:focus-visible::after {
+  transform: translate(-50%, 0);
+}
+
 /* History modal (shell shared with settings.css: .settings-overlay / .settings-modal) */
 
 .history-modal {
