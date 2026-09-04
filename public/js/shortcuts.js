@@ -440,9 +440,9 @@ function setRowDragIndicator(targetTile, position) {
   });
 }
 
-function createFolderIconGrid(items) {
+function createFolderIconGrid(items, large) {
   const grid = document.createElement("span");
-  grid.className = "shortcut-folder-mini-grid";
+  grid.className = large ? "shortcut-folder-mini-grid shortcut-folder-mini-grid-lg" : "shortcut-folder-mini-grid";
   items.slice(0, 4).forEach((child) => {
     const cell = document.createElement("span");
     cell.className = "shortcut-folder-mini-cell";
@@ -531,11 +531,21 @@ function renderShortcutsRow() {
       btn.dataset.index = String(index);
       btn.draggable = true;
 
-      btn.append(createFolderIconGrid(item.items ?? []));
+      btn.append(createFolderIconGrid(item.items ?? [], true));
 
-      const label = document.createElement("span");
-      label.textContent = item.name?.trim() || "Dossier";
-      btn.append(label);
+      const folderName = item.name?.trim();
+      if (folderName) {
+        const label = document.createElement("span");
+        label.className = "shortcut-tile-label";
+        label.textContent = folderName;
+        btn.append(label);
+      } else {
+        // No name set: show the icon grid alone, enlarged like a nameless
+        // shortcut, instead of leaving room for an invisible label.
+        btn.classList.add("shortcut-tile-icon-only");
+        btn.setAttribute("aria-label", "Dossier");
+        btn.title = "Dossier";
+      }
 
       btn.addEventListener("click", () => openFolder(index));
 
@@ -565,6 +575,7 @@ function renderShortcutsRow() {
     const trimmedName = item.name?.trim();
     if (trimmedName) {
       const span = document.createElement("span");
+      span.className = "shortcut-tile-label";
       span.textContent = trimmedName;
       a.append(span);
     } else {
@@ -1249,6 +1260,7 @@ function renderFolderPopup(index) {
     const trimmedName = item.name?.trim();
     if (trimmedName) {
       const span = document.createElement("span");
+      span.className = "shortcut-tile-label";
       span.textContent = trimmedName;
       a.append(span);
     } else {

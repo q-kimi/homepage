@@ -182,16 +182,19 @@
   height: 100%;
 }
 
-.shortcut-tile span {
+.shortcut-tile-label {
   font-size: 12px;
+  line-height: 1.25;
   text-align: center;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  word-break: break-word;
   max-width: 100%;
 }
 
-.shortcut-tile span::first-letter {
+.shortcut-tile-label::first-letter {
   text-transform: uppercase;
 }
 
@@ -227,6 +230,28 @@
 .shortcut-tile:hover .shortcut-folder-mini-grid,
 .shortcut-tile:focus-visible .shortcut-folder-mini-grid {
   background: var(--pill-hover);
+}
+
+/* Larger variant for the main row / folder popup, where there's room to make
+   the mini icons actually legible (the settings editor keeps the compact
+   20px version, matching its other 20px row icons). */
+.shortcut-folder-mini-grid-lg {
+  width: 32px;
+  height: 32px;
+  padding: 3px;
+  gap: 2px;
+  border-radius: 9px;
+}
+
+.shortcut-folder-mini-grid-lg .shortcut-folder-mini-cell {
+  border-radius: 4px;
+}
+
+.shortcut-tile-icon-only .shortcut-folder-mini-grid-lg {
+  width: 40px;
+  height: 40px;
+  padding: 4px;
+  border-radius: 11px;
 }
 
 /* Shortcut context menu */
