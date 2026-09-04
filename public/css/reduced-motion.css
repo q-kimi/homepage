@@ -6,7 +6,9 @@
   .mic-button.listening,
   .greeting-emoji-wave,
   .greeting-emoji-sleep,
-  .settings-tab-panel {
+  .settings-tab-panel,
+  .shortcut-tile-created,
+  .shortcut-tile-created .shortcut-folder-mini-grid {
     animation: none;
   }
 

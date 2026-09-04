@@ -18,7 +18,7 @@ Remplace la page "Nouvel onglet" du navigateur par une page de recherche minimal
 | | |
 |---|---|
 | **Recherche** | Google, Bing, Brave, ChatGPT, Grok, Claude, Mistral AI ou HuggingChat au choix, mémorisé. Suggestions tirées de l'historique, placeholder animé façon machine à écrire. |
-| **Raccourcis** | Ajout, édition, suppression, icônes personnalisées, glisser-déposer pour réordonner. Pagination automatique passé 7 raccourcis. |
+| **Raccourcis** | Ajout, édition, suppression, icônes personnalisées, glisser-déposer pour réordonner ou ranger dans un dossier. Pagination automatique passé 7 raccourcis. |
 | **IA** | Accès direct à Claude, ChatGPT, Grok, Copilot, Gemini, Mistral AI ou HuggingChat, au choix. |
 | **Voix** | Dictée vocale via la Web Speech API, quand le navigateur la supporte. |
 | **Accueil** | Salutation selon l'heure : Bonjour, Bon après-midi, Bonsoir ou Bonne nuit. |

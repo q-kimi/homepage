@@ -67,7 +67,8 @@
   }
 
   .settings-overlay,
-  .history-overlay {
+  .history-overlay,
+  .folder-overlay {
     padding: 14px;
   }
 

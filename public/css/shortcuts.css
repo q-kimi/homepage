@@ -116,6 +116,41 @@
   box-shadow: inset -2px 0 0 0 var(--accent);
 }
 
+.shortcut-tile.drag-over-into {
+  box-shadow: 0 0 0 2px var(--accent);
+  background: var(--card);
+  transform: scale(1.06);
+}
+
+@keyframes shortcut-folder-pop {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.shortcut-tile-created {
+  animation: shortcut-folder-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.shortcut-tile-created .shortcut-folder-mini-grid {
+  animation: shortcut-folder-pop 0.4s 0.05s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.shortcut-tile-folder {
+  font: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
 .shortcut-tile img {
   width: 20px;
   height: 20px;
@@ -160,11 +195,45 @@
   text-transform: uppercase;
 }
 
+/* Folder mini-icon grid (shared between the row tile and the settings editor) */
+
+.shortcut-folder-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1px;
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  border-radius: 5px;
+  background: var(--pill);
+}
+
+.shortcut-folder-mini-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.shortcut-folder-mini-cell img,
+.shortcut-folder-mini-cell svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shortcut-tile:hover .shortcut-folder-mini-grid,
+.shortcut-tile:focus-visible .shortcut-folder-mini-grid {
+  background: var(--pill-hover);
+}
+
 /* Shortcut context menu */
 
 .shortcut-context-menu {
   position: fixed;
-  z-index: 60;
+  z-index: 110;
   min-width: 190px;
   padding: 6px;
   background: var(--card);
@@ -196,6 +265,10 @@
   transition: background 0.12s ease;
 }
 
+.shortcut-context-item[hidden] {
+  display: none;
+}
+
 .shortcut-context-item svg {
   flex: 0 0 auto;
   color: var(--text-dim);
@@ -223,4 +296,62 @@
   height: 1px;
   margin: 5px 2px;
   background: var(--border);
+}
+
+/* Folder popup */
+
+.folder-overlay .folder-popup {
+  /* Compound selector so this reliably beats .settings-modal's max-width
+     regardless of stylesheet load order (settings.css loads after this file). */
+  max-width: 420px;
+}
+
+.folder-popup-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.folder-name-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 600;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background 0.12s ease;
+}
+
+.folder-name-input:hover,
+.folder-name-input:focus {
+  background: var(--pill);
+}
+
+.folder-name-input::placeholder {
+  color: var(--text-dim);
+}
+
+.folder-popup-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-height: 320px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.folder-popup-empty {
+  margin: 20px 0 4px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.folder-popup-empty[hidden] {
+  display: none;
 }

@@ -33,7 +33,16 @@ const addBtn = document.getElementById("shortcuts-add-btn");
 const iconInput = document.getElementById("shortcut-icon-input");
 const contextMenu = document.getElementById("shortcut-context-menu");
 const contextMenuEditBtn = contextMenu.querySelector('[data-action="edit"]');
+const contextMenuMakeFolderBtn = contextMenu.querySelector('[data-action="make-folder"]');
+const contextMenuRenameBtn = contextMenu.querySelector('[data-action="rename"]');
+const contextMenuRemoveFromFolderBtn = contextMenu.querySelector('[data-action="remove-from-folder"]');
 const contextMenuDeleteBtn = contextMenu.querySelector('[data-action="delete"]');
+
+const folderOverlay = document.getElementById("folder-overlay");
+const folderNameInput = document.getElementById("folder-name-input");
+const folderCloseBtn = document.getElementById("folder-close-btn");
+const folderPopupGrid = document.getElementById("folder-popup-grid");
+const folderPopupEmpty = document.getElementById("folder-popup-empty");
 
 const TILE_SIZE = 72;
 const TILE_GAP = 10;
@@ -45,6 +54,9 @@ const ICON_DIMENSION = 64;
 let page = 0;
 let pageSize = MAX_PAGE_SIZE;
 let iconEditIndex = null;
+// Index of a folder tile that should play its "just created" pop-in
+// animation on the next render only; cleared right after that render.
+let pendingCreatedIndex = null;
 
 // Tiles are a fixed pixel width, so how many fit per page depends on the
 // viewport (phone vs. tablet vs. desktop) rather than a constant.
@@ -173,10 +185,11 @@ function renderIcon(container, url, customIcon) {
 }
 
 let rowDragSrcIndex = null;
+let rowDragSrcIsFolder = false;
 
 function clearRowDragIndicators() {
   shortcutsRow.querySelectorAll(".shortcut-tile").forEach((el) => {
-    el.classList.remove("drag-over-left", "drag-over-right", "dragging");
+    el.classList.remove("drag-over-left", "drag-over-right", "drag-over-into", "dragging");
   });
 }
 
@@ -184,6 +197,82 @@ function setRowDragIndicator(targetTile, position) {
   shortcutsRow.querySelectorAll(".shortcut-tile").forEach((el) => {
     el.classList.toggle("drag-over-left", el === targetTile && position === "before");
     el.classList.toggle("drag-over-right", el === targetTile && position === "after");
+    el.classList.toggle("drag-over-into", el === targetTile && position === "into");
+  });
+}
+
+function createFolderIconGrid(items) {
+  const grid = document.createElement("span");
+  grid.className = "shortcut-folder-mini-grid";
+  items.slice(0, 4).forEach((child) => {
+    const cell = document.createElement("span");
+    cell.className = "shortcut-folder-mini-cell";
+    renderIcon(cell, child.url, child.icon);
+    grid.append(cell);
+  });
+  return grid;
+}
+
+// Shared drag-to-reorder logic for both plain shortcuts and folders in the
+// main row. Dropping a plain shortcut on the middle third of a folder tile
+// files it into that folder instead of reordering past it.
+function attachRowDragHandlers(el, index, isFolder) {
+  el.addEventListener("dragstart", (e) => {
+    rowDragSrcIndex = index;
+    rowDragSrcIsFolder = isFolder;
+    el.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
+    e.dataTransfer.setDragImage(el, e.offsetX, e.offsetY);
+  });
+
+  el.addEventListener("dragend", () => {
+    clearRowDragIndicators();
+    rowDragSrcIndex = null;
+    rowDragSrcIsFolder = false;
+  });
+
+  el.addEventListener("dragover", (e) => {
+    if (rowDragSrcIndex === null || index === rowDragSrcIndex) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    const rect = el.getBoundingClientRect();
+    const relX = e.clientX - rect.left;
+    const canDropInto = isFolder && !rowDragSrcIsFolder && relX > rect.width * 0.25 && relX < rect.width * 0.75;
+    setRowDragIndicator(el, canDropInto ? "into" : relX > rect.width / 2 ? "after" : "before");
+  });
+
+  el.addEventListener("drop", (e) => {
+    e.preventDefault();
+    if (rowDragSrcIndex === null || index === rowDragSrcIndex) return;
+
+    const rect = el.getBoundingClientRect();
+    const relX = e.clientX - rect.left;
+    const canDropInto = isFolder && !rowDragSrcIsFolder && relX > rect.width * 0.25 && relX < rect.width * 0.75;
+
+    const current = loadShortcuts();
+    const [moved] = current.splice(rowDragSrcIndex, 1);
+
+    if (canDropInto) {
+      const targetIndex = rowDragSrcIndex < index ? index - 1 : index;
+      const folder = current[targetIndex];
+      if (folder?.folder) {
+        folder.items.push(moved);
+      } else {
+        current.splice(targetIndex, 0, moved);
+      }
+    } else {
+      const isAfter = relX > rect.width / 2;
+      let targetIndex = index + (isAfter ? 1 : 0);
+      if (rowDragSrcIndex < targetIndex) targetIndex -= 1;
+      current.splice(targetIndex, 0, moved);
+    }
+
+    saveShortcuts(current);
+    rowDragSrcIndex = null;
+    rowDragSrcIsFolder = false;
+    renderShortcutsRow();
+    renderEditor();
   });
 }
 
@@ -192,8 +281,31 @@ function renderShortcutsRow() {
   shortcutsRow.replaceChildren();
 
   let visibleCount = 0;
-  list.forEach(({ name, url, icon }, index) => {
-    const safeUrl = normalizeUrl(url);
+  list.forEach((item, index) => {
+    if (item.folder) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "shortcut-tile shortcut-tile-folder";
+      if (index === pendingCreatedIndex) btn.classList.add("shortcut-tile-created");
+      btn.dataset.index = String(index);
+      btn.draggable = true;
+
+      btn.append(createFolderIconGrid(item.items ?? []));
+
+      const label = document.createElement("span");
+      label.textContent = item.name?.trim() || "Dossier";
+      btn.append(label);
+
+      btn.addEventListener("click", () => openFolder(index));
+
+      attachRowDragHandlers(btn, index, true);
+
+      shortcutsRow.append(btn);
+      visibleCount += 1;
+      return;
+    }
+
+    const safeUrl = normalizeUrl(item.url);
     if (!safeUrl) return;
 
     const a = document.createElement("a");
@@ -206,10 +318,10 @@ function renderShortcutsRow() {
 
     const iconWrap = document.createElement("span");
     iconWrap.className = "shortcut-tile-icon";
-    renderIcon(iconWrap, url, icon);
+    renderIcon(iconWrap, item.url, item.icon);
     if (iconWrap.hasChildNodes()) a.append(iconWrap);
 
-    const trimmedName = name?.trim();
+    const trimmedName = item.name?.trim();
     if (trimmedName) {
       const span = document.createElement("span");
       span.textContent = trimmedName;
@@ -218,57 +330,20 @@ function renderShortcutsRow() {
       // No name set: show the icon alone, enlarged and centered so the tile
       // doesn't look like it's leaving room for an invisible label.
       a.classList.add("shortcut-tile-icon-only");
-      const label = hostnameOf(url);
+      const label = hostnameOf(item.url);
       if (label) {
         a.setAttribute("aria-label", label);
         a.title = label;
       }
     }
 
-    a.addEventListener("dragstart", (e) => {
-      rowDragSrcIndex = index;
-      a.classList.add("dragging");
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", String(index));
-      e.dataTransfer.setDragImage(a, e.offsetX, e.offsetY);
-    });
-
-    a.addEventListener("dragend", () => {
-      clearRowDragIndicators();
-      rowDragSrcIndex = null;
-    });
-
-    a.addEventListener("dragover", (e) => {
-      if (rowDragSrcIndex === null || index === rowDragSrcIndex) return;
-      e.preventDefault();
-      e.dataTransfer.dropEffect = "move";
-      const rect = a.getBoundingClientRect();
-      const isAfter = e.clientX - rect.left > rect.width / 2;
-      setRowDragIndicator(a, isAfter ? "after" : "before");
-    });
-
-    a.addEventListener("drop", (e) => {
-      e.preventDefault();
-      if (rowDragSrcIndex === null || index === rowDragSrcIndex) return;
-
-      const rect = a.getBoundingClientRect();
-      const isAfter = e.clientX - rect.left > rect.width / 2;
-      let targetIndex = index + (isAfter ? 1 : 0);
-
-      const current = loadShortcuts();
-      const [moved] = current.splice(rowDragSrcIndex, 1);
-      if (rowDragSrcIndex < targetIndex) targetIndex -= 1;
-      current.splice(targetIndex, 0, moved);
-
-      saveShortcuts(current);
-      rowDragSrcIndex = null;
-      renderShortcutsRow();
-      renderEditor();
-    });
+    attachRowDragHandlers(a, index, false);
 
     shortcutsRow.append(a);
     visibleCount += 1;
   });
+
+  pendingCreatedIndex = null;
 
   pageSize = computePageSize();
   const totalPages = Math.max(1, Math.ceil(visibleCount / pageSize));
@@ -350,83 +425,126 @@ function renderEditor() {
     grip.setAttribute("aria-hidden", "true");
     grip.innerHTML = GRIP_ICON;
 
-    const iconWrap = document.createElement("span");
-    iconWrap.className = "shortcut-edit-icon-wrap";
+    if (item.folder) {
+      const iconWrap = document.createElement("span");
+      iconWrap.className = "shortcut-edit-icon-wrap";
+      iconWrap.append(createFolderIconGrid(item.items ?? []));
 
-    const icon = document.createElement("button");
-    icon.type = "button";
-    icon.className = "shortcut-edit-icon";
-    icon.title = "Changer l'icône";
-    icon.setAttribute("aria-label", "Changer l'icône de ce raccourci");
-    renderIcon(icon, item.url, item.icon);
+      const nameInput = document.createElement("input");
+      nameInput.type = "text";
+      nameInput.className = "shortcut-edit-name";
+      nameInput.placeholder = "Dossier";
+      nameInput.maxLength = 24;
+      nameInput.value = item.name ?? "";
 
-    icon.addEventListener("click", () => {
-      iconEditIndex = index;
-      iconInput.click();
-    });
+      const count = item.items?.length ?? 0;
+      const countLabel = document.createElement("span");
+      countLabel.className = "shortcut-edit-folder-count";
+      countLabel.textContent = `${count} raccourci${count > 1 ? "s" : ""}`;
 
-    const iconReset = document.createElement("button");
-    iconReset.type = "button";
-    iconReset.className = "shortcut-edit-icon-reset";
-    iconReset.title = "Revenir à l'icône automatique";
-    iconReset.setAttribute("aria-label", "Revenir à l'icône automatique");
-    iconReset.innerHTML = REMOVE_ICON;
-    iconReset.hidden = !item.icon;
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "shortcut-edit-remove";
+      removeBtn.setAttribute("aria-label", "Supprimer ce dossier");
+      removeBtn.innerHTML = REMOVE_ICON;
 
-    iconReset.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const current = loadShortcuts();
-      delete current[index].icon;
-      saveShortcuts(current);
-      renderIcon(icon, urlInput.value);
-      iconReset.hidden = true;
-      renderShortcutsRow();
-    });
+      row.append(grip, iconWrap, nameInput, countLabel, removeBtn);
+      li.append(row);
+      editList.append(li);
 
-    iconWrap.append(icon, iconReset);
+      nameInput.addEventListener("input", () => {
+        const current = loadShortcuts();
+        current[index] = { ...current[index], name: nameInput.value };
+        saveShortcuts(current);
+        renderShortcutsRow();
+      });
 
-    const nameInput = document.createElement("input");
-    nameInput.type = "text";
-    nameInput.className = "shortcut-edit-name";
-    nameInput.placeholder = "Nom";
-    nameInput.maxLength = 20;
-    nameInput.value = item.name ?? "";
+      removeBtn.addEventListener("click", () => {
+        const current = loadShortcuts();
+        current.splice(index, 1);
+        saveShortcuts(current);
+        renderShortcutsRow();
+        renderEditor();
+      });
+    } else {
+      const iconWrap = document.createElement("span");
+      iconWrap.className = "shortcut-edit-icon-wrap";
 
-    const urlInput = document.createElement("input");
-    urlInput.type = "text";
-    urlInput.className = "shortcut-edit-url";
-    urlInput.placeholder = "https://exemple.com";
-    urlInput.value = item.url ?? "";
+      const icon = document.createElement("button");
+      icon.type = "button";
+      icon.className = "shortcut-edit-icon";
+      icon.title = "Changer l'icône";
+      icon.setAttribute("aria-label", "Changer l'icône de ce raccourci");
+      renderIcon(icon, item.url, item.icon);
 
-    const removeBtn = document.createElement("button");
-    removeBtn.type = "button";
-    removeBtn.className = "shortcut-edit-remove";
-    removeBtn.setAttribute("aria-label", "Supprimer ce raccourci");
-    removeBtn.innerHTML = REMOVE_ICON;
+      icon.addEventListener("click", () => {
+        iconEditIndex = index;
+        iconInput.click();
+      });
 
-    row.append(grip, iconWrap, nameInput, urlInput, removeBtn);
+      const iconReset = document.createElement("button");
+      iconReset.type = "button";
+      iconReset.className = "shortcut-edit-icon-reset";
+      iconReset.title = "Revenir à l'icône automatique";
+      iconReset.setAttribute("aria-label", "Revenir à l'icône automatique");
+      iconReset.innerHTML = REMOVE_ICON;
+      iconReset.hidden = !item.icon;
 
-    li.append(row);
-    editList.append(li);
+      iconReset.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const current = loadShortcuts();
+        delete current[index].icon;
+        saveShortcuts(current);
+        renderIcon(icon, urlInput.value);
+        iconReset.hidden = true;
+        renderShortcutsRow();
+      });
 
-    function commit() {
-      const current = loadShortcuts();
-      current[index] = { ...current[index], name: nameInput.value, url: urlInput.value };
-      saveShortcuts(current);
-      renderIcon(icon, urlInput.value, current[index].icon);
-      renderShortcutsRow();
+      iconWrap.append(icon, iconReset);
+
+      const nameInput = document.createElement("input");
+      nameInput.type = "text";
+      nameInput.className = "shortcut-edit-name";
+      nameInput.placeholder = "Nom";
+      nameInput.maxLength = 20;
+      nameInput.value = item.name ?? "";
+
+      const urlInput = document.createElement("input");
+      urlInput.type = "text";
+      urlInput.className = "shortcut-edit-url";
+      urlInput.placeholder = "https://exemple.com";
+      urlInput.value = item.url ?? "";
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "shortcut-edit-remove";
+      removeBtn.setAttribute("aria-label", "Supprimer ce raccourci");
+      removeBtn.innerHTML = REMOVE_ICON;
+
+      row.append(grip, iconWrap, nameInput, urlInput, removeBtn);
+
+      li.append(row);
+      editList.append(li);
+
+      const commit = () => {
+        const current = loadShortcuts();
+        current[index] = { ...current[index], name: nameInput.value, url: urlInput.value };
+        saveShortcuts(current);
+        renderIcon(icon, urlInput.value, current[index].icon);
+        renderShortcutsRow();
+      };
+
+      nameInput.addEventListener("input", commit);
+      urlInput.addEventListener("input", commit);
+
+      removeBtn.addEventListener("click", () => {
+        const current = loadShortcuts();
+        current.splice(index, 1);
+        saveShortcuts(current);
+        renderShortcutsRow();
+        renderEditor();
+      });
     }
-
-    nameInput.addEventListener("input", commit);
-    urlInput.addEventListener("input", commit);
-
-    removeBtn.addEventListener("click", () => {
-      const current = loadShortcuts();
-      current.splice(index, 1);
-      saveShortcuts(current);
-      renderShortcutsRow();
-      renderEditor();
-    });
 
     li.addEventListener("dragstart", (e) => {
       dragSrcIndex = index;
@@ -501,14 +619,19 @@ iconInput.addEventListener("change", async () => {
   }
 });
 
-let contextMenuIndex = null;
+let contextMenuTarget = null;
 
 function closeContextMenu() {
   contextMenu.hidden = true;
 }
 
-function openContextMenu(index, x, y) {
-  contextMenuIndex = index;
+function openContextMenu(target, x, y) {
+  contextMenuTarget = target;
+
+  contextMenuEditBtn.hidden = target.type !== "shortcut";
+  contextMenuMakeFolderBtn.hidden = target.type !== "shortcut";
+  contextMenuRenameBtn.hidden = target.type !== "folder";
+  contextMenuRemoveFromFolderBtn.hidden = target.type !== "folder-item";
 
   contextMenu.hidden = false;
   contextMenu.style.left = "0px";
@@ -525,32 +648,214 @@ shortcutsRow.addEventListener("contextmenu", (e) => {
   const tile = e.target.closest(".shortcut-tile");
   if (!tile) return;
   e.preventDefault();
-  openContextMenu(Number(tile.dataset.index), e.clientX, e.clientY);
+  const index = Number(tile.dataset.index);
+  const type = tile.classList.contains("shortcut-tile-folder") ? "folder" : "shortcut";
+  openContextMenu({ type, index }, e.clientX, e.clientY);
+});
+
+folderPopupGrid.addEventListener("contextmenu", (e) => {
+  const tile = e.target.closest(".shortcut-tile");
+  if (!tile || openFolderIndex === null) return;
+  e.preventDefault();
+  openContextMenu(
+    { type: "folder-item", folderIndex: openFolderIndex, itemIndex: Number(tile.dataset.index) },
+    e.clientX,
+    e.clientY
+  );
 });
 
 contextMenuEditBtn.addEventListener("click", () => {
-  const index = contextMenuIndex;
+  const target = contextMenuTarget;
   closeContextMenu();
-  if (index === null) return;
+  if (!target || target.type !== "shortcut") return;
   openSettings("shortcuts");
-  const row = editList.children[index];
-  row?.querySelector(".shortcut-edit-name")?.focus();
+  const row = editList.children[target.index];
   row?.scrollIntoView({ block: "nearest" });
+
+  // The settings overlay fades in via a visibility/opacity transition, so the
+  // input isn't actually focusable yet in this same tick — focusing it has
+  // to wait a beat for that transition to commit. A timer (unlike rAF) fires
+  // regardless of whether the page is actively compositing new frames.
+  setTimeout(() => {
+    const urlInput = row?.querySelector(".shortcut-edit-url");
+    urlInput?.focus();
+    urlInput?.select();
+  }, 50);
 });
 
-contextMenuDeleteBtn.addEventListener("click", () => {
-  const index = contextMenuIndex;
+contextMenuMakeFolderBtn.addEventListener("click", () => {
+  const target = contextMenuTarget;
   closeContextMenu();
-  if (index === null) return;
+  if (!target || target.type !== "shortcut") return;
   const current = loadShortcuts();
-  current.splice(index, 1);
+  const shortcut = current[target.index];
+  if (!shortcut) return;
+  current[target.index] = { name: "Nouveau dossier", folder: true, items: [shortcut] };
   saveShortcuts(current);
+  pendingCreatedIndex = target.index;
   renderShortcutsRow();
   renderEditor();
 });
 
+contextMenuRenameBtn.addEventListener("click", () => {
+  const target = contextMenuTarget;
+  closeContextMenu();
+  if (!target || target.type !== "folder") return;
+  openFolder(target.index, { focusName: true });
+});
+
+contextMenuRemoveFromFolderBtn.addEventListener("click", () => {
+  const target = contextMenuTarget;
+  closeContextMenu();
+  if (!target || target.type !== "folder-item") return;
+  const current = loadShortcuts();
+  const folder = current[target.folderIndex];
+  if (!folder?.folder) return;
+  const [moved] = folder.items.splice(target.itemIndex, 1);
+  if (folder.items.length === 0) current.splice(target.folderIndex, 1);
+  if (moved) current.push(moved);
+  saveShortcuts(current);
+  renderShortcutsRow();
+  renderEditor();
+  refreshFolderPopup(target.folderIndex);
+});
+
+contextMenuDeleteBtn.addEventListener("click", () => {
+  const target = contextMenuTarget;
+  closeContextMenu();
+  if (!target) return;
+  const current = loadShortcuts();
+
+  if (target.type === "folder-item") {
+    const folder = current[target.folderIndex];
+    if (!folder?.folder) return;
+    folder.items.splice(target.itemIndex, 1);
+    if (folder.items.length === 0) current.splice(target.folderIndex, 1);
+    saveShortcuts(current);
+    renderShortcutsRow();
+    renderEditor();
+    refreshFolderPopup(target.folderIndex);
+    return;
+  }
+
+  current.splice(target.index, 1);
+  saveShortcuts(current);
+  renderShortcutsRow();
+  renderEditor();
+  if (target.type === "folder") closeFolderPopup();
+});
+
 onEscape(closeContextMenu);
 onClickOutside([contextMenu], closeContextMenu);
+
+// Folder popup: opened by clicking a folder tile in the main row.
+
+let openFolderIndex = null;
+
+function renderFolderPopup(index) {
+  const current = loadShortcuts();
+  const folder = current[index];
+  if (!folder?.folder) {
+    closeFolderPopup();
+    return;
+  }
+
+  openFolderIndex = index;
+  folderNameInput.value = folder.name ?? "";
+  folderPopupGrid.replaceChildren();
+
+  const items = folder.items ?? [];
+  folderPopupEmpty.hidden = items.length > 0;
+
+  items.forEach((item, itemIndex) => {
+    const safeUrl = normalizeUrl(item.url);
+    if (!safeUrl) return;
+
+    const a = document.createElement("a");
+    a.className = "shortcut-tile";
+    a.href = safeUrl;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.dataset.index = String(itemIndex);
+
+    const iconWrap = document.createElement("span");
+    iconWrap.className = "shortcut-tile-icon";
+    renderIcon(iconWrap, item.url, item.icon);
+    if (iconWrap.hasChildNodes()) a.append(iconWrap);
+
+    const trimmedName = item.name?.trim();
+    if (trimmedName) {
+      const span = document.createElement("span");
+      span.textContent = trimmedName;
+      a.append(span);
+    } else {
+      a.classList.add("shortcut-tile-icon-only");
+      const label = hostnameOf(item.url);
+      if (label) {
+        a.setAttribute("aria-label", label);
+        a.title = label;
+      }
+    }
+
+    folderPopupGrid.append(a);
+  });
+}
+
+// Re-renders the popup if it's still showing this folder, or closes it if
+// the folder was emptied out (and pruned) by the mutation that just ran.
+function refreshFolderPopup(index) {
+  if (openFolderIndex !== index) return;
+  const current = loadShortcuts();
+  if (current[index]?.folder) {
+    renderFolderPopup(index);
+  } else {
+    closeFolderPopup();
+  }
+}
+
+function openFolder(index, { focusName } = {}) {
+  renderFolderPopup(index);
+  if (openFolderIndex === null) return;
+  folderOverlay.classList.add("open");
+  if (focusName) {
+    folderNameInput.focus();
+    folderNameInput.select();
+  }
+}
+
+function closeFolderPopup() {
+  folderOverlay.classList.remove("open");
+  openFolderIndex = null;
+}
+
+folderCloseBtn.addEventListener("click", closeFolderPopup);
+
+folderNameInput.addEventListener("input", () => {
+  if (openFolderIndex === null) return;
+  const current = loadShortcuts();
+  const folder = current[openFolderIndex];
+  if (!folder?.folder) return;
+  folder.name = folderNameInput.value;
+  saveShortcuts(current);
+  renderShortcutsRow();
+});
+
+// Backdrop-click-to-close, tracked from mousedown rather than a generic
+// "outside click" listener: the click that opens the popup (on a folder
+// tile) would otherwise immediately count as "outside" and close it again.
+let folderOverlayMouseDownTarget = null;
+
+folderOverlay.addEventListener("mousedown", (e) => {
+  folderOverlayMouseDownTarget = e.target;
+});
+
+folderOverlay.addEventListener("click", (e) => {
+  if (e.target === folderOverlay && folderOverlayMouseDownTarget === folderOverlay) {
+    closeFolderPopup();
+  }
+});
+
+onEscape(closeFolderPopup);
 
 renderShortcutsRow();
 renderEditor();
