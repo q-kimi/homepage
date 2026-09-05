@@ -11,6 +11,17 @@ export function onEscape(callback) {
   });
 }
 
+// Delays a costly call (e.g. a full re-render) until `delay` ms after the
+// last invocation, so a burst of calls (fast typing, rapid clicks) collapses
+// into a single trailing one instead of one per event.
+export function debounce(fn, delay) {
+  let handle = null;
+  return (...args) => {
+    clearTimeout(handle);
+    handle = setTimeout(() => fn(...args), delay);
+  };
+}
+
 export function readJsonArray(key, { filter } = {}) {
   try {
     const raw = JSON.parse(localStorage.getItem(key));

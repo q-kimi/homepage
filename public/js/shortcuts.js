@@ -1,4 +1,4 @@
-import { readJsonArray, onClickOutside, onEscape, dedupeUrlScheme } from "./dom-utils.js";
+import { readJsonArray, onClickOutside, onEscape, dedupeUrlScheme, debounce } from "./dom-utils.js";
 import { openSettings } from "./settings.js";
 
 const SHORTCUTS_KEY = "homepage.shortcuts";
@@ -91,6 +91,54 @@ let glitchOverlays = [];
 let glitchIconOverlays = [];
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// The shuffling-rune tick is only useful while at least one hidden item's
+// overlay exists, which is rare (most users have none). Rather than a
+// perpetual setInterval ticking for the entire tab's lifetime, it starts on
+// demand and stops itself the moment there's nothing left to animate.
+let glitchTickHandle = null;
+
+function glitchTick() {
+  glitchOverlays.forEach(({ input, overlay }) => {
+    if (!input.isConnected) return;
+    // Settings tab currently hidden: cheap skip, but keep ticking so it
+    // resumes the instant the tab becomes visible again (rather than fully
+    // stopping, which would need something to explicitly restart it).
+    if (overlay.offsetParent === null) return;
+    overlay.style.left = `${input.offsetLeft}px`;
+    overlay.style.top = `${input.offsetTop}px`;
+    overlay.style.width = `${input.offsetWidth}px`;
+    overlay.style.height = `${input.offsetHeight}px`;
+    if (document.activeElement === input) return;
+    overlay.textContent = input.value ? randomRuneString(input.value.length) : "";
+  });
+
+  glitchIconOverlays.forEach(({ container, overlay }) => {
+    if (!container.isConnected) return;
+    if (overlay.offsetParent === null) return;
+    overlay.style.left = `${container.offsetLeft}px`;
+    overlay.style.top = `${container.offsetTop}px`;
+    overlay.style.width = `${container.offsetWidth}px`;
+    overlay.style.height = `${container.offsetHeight}px`;
+    overlay.textContent = randomRuneString(1);
+  });
+
+  // Nothing registered at all (no hidden items exist anywhere): the only
+  // case where it's safe to stop outright, since a fresh createGlitchOverlay
+  // call is what restarts it later.
+  if (glitchOverlays.length === 0 && glitchIconOverlays.length === 0) stopGlitchTicking();
+}
+
+function ensureGlitchTicking() {
+  if (prefersReducedMotion || glitchTickHandle !== null) return;
+  glitchTickHandle = setInterval(glitchTick, 90);
+}
+
+function stopGlitchTicking() {
+  if (glitchTickHandle === null) return;
+  clearInterval(glitchTickHandle);
+  glitchTickHandle = null;
+}
+
 function createGlitchOverlay(input, extraClass) {
   const overlay = document.createElement("span");
   overlay.className = "shortcut-edit-glitch-overlay";
@@ -111,6 +159,7 @@ function createGlitchOverlay(input, extraClass) {
   });
 
   glitchOverlays.push({ input, overlay });
+  ensureGlitchTicking();
 }
 
 // Icon equivalent: no real value to preserve for editing, so it just shows a
@@ -128,29 +177,7 @@ function createGlitchIconOverlay(container) {
   }
 
   glitchIconOverlays.push({ container, overlay });
-}
-
-if (!prefersReducedMotion) {
-  setInterval(() => {
-    glitchOverlays.forEach(({ input, overlay }) => {
-      if (!input.isConnected) return;
-      overlay.style.left = `${input.offsetLeft}px`;
-      overlay.style.top = `${input.offsetTop}px`;
-      overlay.style.width = `${input.offsetWidth}px`;
-      overlay.style.height = `${input.offsetHeight}px`;
-      if (document.activeElement === input) return;
-      overlay.textContent = input.value ? randomRuneString(input.value.length) : "";
-    });
-
-    glitchIconOverlays.forEach(({ container, overlay }) => {
-      if (!container.isConnected) return;
-      overlay.style.left = `${container.offsetLeft}px`;
-      overlay.style.top = `${container.offsetTop}px`;
-      overlay.style.width = `${container.offsetWidth}px`;
-      overlay.style.height = `${container.offsetHeight}px`;
-      overlay.textContent = randomRuneString(1);
-    });
-  }, 90);
+  ensureGlitchTicking();
 }
 
 // Resolves an overlay's text character-by-character between plain text and
@@ -621,6 +648,13 @@ function updateCarouselPosition() {
   shortcutsRow.style.transform = target ? `translateX(-${target.offsetLeft}px)` : "";
 }
 
+// A live-typing "input" listener (name/link fields) fires once per
+// keystroke; rebuilding every tile's DOM (icons included) that often is
+// wasted work mid-typing, so those call sites schedule this instead of
+// calling renderShortcutsRow() directly. saveShortcuts() itself still runs
+// immediately wherever it's called, so nothing is ever lost mid-debounce.
+const scheduleRowRender = debounce(renderShortcutsRow, 200);
+
 prevBtn.addEventListener("click", () => {
   page = Math.max(0, page - 1);
   prevBtn.disabled = page === 0;
@@ -815,7 +849,7 @@ function renderEditor() {
           folder.items[itemIndex] = { ...folder.items[itemIndex], name: childNameInput.value, url: childUrlInput.value };
           saveShortcuts(current);
           renderIcon(childIcon, childUrlInput.value, folder.items[itemIndex].icon);
-          renderShortcutsRow();
+          scheduleRowRender();
           refreshFolderPopup(index);
         };
 
@@ -863,7 +897,7 @@ function renderEditor() {
         const current = loadShortcuts();
         current[index] = { ...current[index], name: nameInput.value };
         saveShortcuts(current);
-        renderShortcutsRow();
+        scheduleRowRender();
         refreshFolderPopup(index);
       });
 
@@ -958,7 +992,7 @@ function renderEditor() {
         current[index] = { ...current[index], name: nameInput.value, url: urlInput.value };
         saveShortcuts(current);
         renderIcon(icon, urlInput.value, current[index].icon);
-        renderShortcutsRow();
+        scheduleRowRender();
       };
 
       nameInput.addEventListener("input", commit);
@@ -1358,7 +1392,7 @@ folderNameInput.addEventListener("input", () => {
   if (!folder?.folder) return;
   folder.name = folderNameInput.value;
   saveShortcuts(current);
-  renderShortcutsRow();
+  scheduleRowRender();
 });
 
 // Backdrop-click-to-close, tracked from mousedown rather than a generic
