@@ -11,7 +11,7 @@
 
 ---
 
-Une page de recherche minimaliste pour remplacer le "Nouvel onglet" du navigateur. Pensée pour un usage perso : rapide, privée, sans compte ni serveur — toute la configuration vit dans le `localStorage` du navigateur, rien n'est jamais envoyé ailleurs.
+Une page de recherche minimaliste pour remplacer le "Nouvel onglet" du navigateur. Pensée pour un usage perso : rapide, privée, sans compte ni serveur. Toute la configuration vit dans le `localStorage` du navigateur, rien n'est jamais envoyé ailleurs.
 
 ## Recherche
 
@@ -35,7 +35,7 @@ Accès direct à Claude, ChatGPT, Grok, Copilot, Gemini, Mistral AI, HuggingChat
 
 ## Accueil
 
-Salutation selon l'heure — Bonjour, Bon après-midi, Bonsoir, Bonne nuit — avec un prénom optionnel à la place du `{User}` par défaut.
+Salutation selon l'heure (Bonjour, Bon après-midi, Bonsoir, Bonne nuit), avec un prénom optionnel à la place du `{User}` par défaut.
 
 ## Historique & sauvegarde
 

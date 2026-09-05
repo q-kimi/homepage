@@ -713,7 +713,7 @@
 /* Hidden items: their name/link text and icon are covered by a layer of
    constantly shuffling runes (Standard Galactic Alphabet / Minecraft
    enchanting-table style) instead of the real content. The real input and
-   icon underneath are untouched and still fully usable — the text overlay
+   icon underneath are untouched and still fully usable: the text overlay
    just hides while its field is focused, and icon clicks pass straight
    through (see shortcuts.js). */
 .shortcut-edit-glitch-overlay,

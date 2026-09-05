@@ -155,7 +155,7 @@ if (!prefersReducedMotion) {
 
 // Resolves an overlay's text character-by-character between plain text and
 // runes, in a random order (a few still-unresolved characters keep
-// reshuffling each frame) — an "encrypting"/"decrypting" reveal effect.
+// reshuffling each frame), an "encrypting"/"decrypting" reveal effect.
 function playTextGlitchAnimation(overlay, text, direction, durationMs, onDone) {
   const length = text.length;
   if (length === 0) {
@@ -224,7 +224,7 @@ const VISIBILITY_ANIM_DURATION = 550;
 
 // Plays an "encrypting" (hide) or "decrypting" (show) animation on a row's
 // name/link/icon fields, then commits the actual hidden flag once every
-// field has finished settling — the tile on the main row only appears or
+// field has finished settling: the tile on the main row only appears or
 // disappears once its item is fully encrypted/decrypted.
 function animateVisibilityToggle(index, fields) {
   const item = loadShortcuts()[index];
@@ -1105,7 +1105,7 @@ folderPopupGrid.addEventListener("contextmenu", (e) => {
 
 // The settings overlay fades in via a visibility/opacity transition, and an
 // expanding folder animates its own height, so the target input isn't
-// actually focusable yet in this same tick — focusing it has to wait a beat
+// actually focusable yet in this same tick, so focusing it has to wait a beat
 // for that to commit. A timer (unlike rAF) fires regardless of whether the
 // page is actively compositing new frames.
 function focusUrlInputSoon(getRow) {

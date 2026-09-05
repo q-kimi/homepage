@@ -1,5 +1,5 @@
 # Static site: no build step needed, just serve the source files directly.
-# (Do NOT run this through `vite build` — Vite content-hashes the JS/CSS
+# (Do NOT run this through `vite build`: Vite content-hashes the JS/CSS
 # filenames, which breaks the very first load after every redeploy: a
 # browser can still hold an index.html referencing the previous deploy's
 # hashed filenames, and those files no longer exist once the new
